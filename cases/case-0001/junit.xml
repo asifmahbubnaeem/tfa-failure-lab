@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="21" time="10.305" timestamp="2026-11-23T08:08:17.866509+00:00" hostname="runnervm0hi8g"><testcase classname="tests.test_suites.test_auth" name="test_login_success_standard_user[chromium]" time="1.530" /><testcase classname="tests.test_suites.test_auth" name="test_login_failure_invalid_credentials[chromium-scenario0]" time="0.275" /><testcase classname="tests.test_suites.test_auth" name="test_login_failure_invalid_credentials[chromium-scenario1]" time="0.274" /><testcase classname="tests.test_suites.test_auth" name="test_login_failure_invalid_credentials[chromium-scenario2]" time="0.270" /><testcase classname="tests.test_suites.test_auth" name="test_login_failure_invalid_credentials[chromium-scenario3]" time="0.261" /><testcase classname="tests.test_suites.test_auth" name="test_login_failure_invalid_credentials[chromium-scenario4]" time="0.262" /><testcase classname="tests.test_suites.test_auth" name="test_locked_out_user_behavior[chromium]" time="0.268" /><testcase classname="tests.test_suites.test_auth" name="test_logout_and_session_persistence[chromium]" time="0.457" /><testcase classname="tests.test_suites.test_cart" name="test_add_single_item_updates_cart_badge[chromium]" time="0.381" /><testcase classname="tests.test_suites.test_cart" name="test_add_multiple_items_appear_in_cart[chromium]" time="0.462" /><testcase classname="tests.test_suites.test_cart" name="test_remove_item_updates_cart[chromium]" time="0.530" /><testcase classname="tests.test_suites.test_cart" name="test_cart_persists_across_navigation[chromium]" time="0.580" /><testcase classname="tests.test_suites.test_catalog" name="test_product_listing_loads_correctly[chromium]" time="0.324" /><testcase classname="tests.test_suites.test_catalog" name="test_sort_by_name_az[chromium]" time="0.327" /><testcase classname="tests.test_suites.test_catalog" name="test_sort_by_name_za[chromium]" time="0.325" /><testcase classname="tests.test_suites.test_catalog" name="test_sort_by_price_low_high[chromium]" time="0.320" /><testcase classname="tests.test_suites.test_catalog" name="test_sort_by_price_high_low[chromium]" time="0.325" /><testcase classname="tests.test_suites.test_checkout" name="test_complete_purchase_with_valid_details[chromium]" time="0.735" /><testcase classname="tests.test_suites.test_checkout" name="test_checkout_blocked_when_required_fields_missing[chromium]" time="0.661" /><testcase classname="tests.test_suites.test_checkout" name="test_order_summary_totals_are_correct[chromium]" time="0.666"><failure message="AssertionError: Total mismatch. Item(50.49) + Tax(4.03) != Total(54.53)">page = &lt;Page url='http://127.0.0.1:8000/checkout-step-two.html'&gt;
+
+    def test_order_summary_totals_are_correct(page: Page):
+        _start_checkout(page)
+        step_one = CheckoutStepOnePage(page)
+        checkout_user = random_checkout_user()
+        step_one.fill_checkout_form(
+            checkout_user.first_name, checkout_user.last_name, checkout_user.postal_code
+        )
+        step_one.continue_to_step_two()
+        step_two = CheckoutStepTwoPage(page)
+        item_total = step_two.get_item_total()
+        tax = step_two.get_tax()
+        total = step_two.get_total()
+        # Reconstruct item prices from cart page
+        page.click(".cart_item_label")  # navigate not necessary; we reuse totals directly
+        # Since we do not have individual prices here, we assert internal consistency of UI totals
+&gt;       assert_order_totals_correct([item_total], item_total, tax, total)
+
+tests/test_suites/test_checkout.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item_prices = [Decimal('50.49')], ui_item_total = Decimal('50.49')
+ui_tax = Decimal('4.03'), ui_total = Decimal('54.53')
+
+    def assert_order_totals_correct(
+        item_prices: Iterable[Decimal], ui_item_total: Decimal, ui_tax: Decimal, ui_total: Decimal
+    ) -&gt; None:
+        calculated_item_total = sum(item_prices)
+        # SauceDemo uses a fixed tax rate of 8% in the UI, but we assert using the UI values to avoid brittleness.
+        assert calculated_item_total == ui_item_total, (
+            f"Item total mismatch. Calculated={calculated_item_total}, UI={ui_item_total}"
+        )
+&gt;       assert ui_item_total + ui_tax == ui_total, (
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            f"Total mismatch. Item({ui_item_total}) + Tax({ui_tax}) != Total({ui_total})"
+        )
+E       AssertionError: Total mismatch. Item(50.49) + Tax(4.03) != Total(54.53)
+
+tests/utils/assertions.py:22: AssertionError</failure></testcase><testcase classname="tests.test_suites.test_checkout" name="test_confirmation_screen_content[chromium]" time="0.871" /></testsuite></testsuites>

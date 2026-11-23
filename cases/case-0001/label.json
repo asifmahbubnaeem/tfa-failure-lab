@@ -1,0 +1,17 @@
+{
+  "case_id": "case-0001",
+  "category": "product_bug",
+  "root_cause": "Tax is truncated to the cent but the total is rounded, so item total + tax != total",
+  "scenario": "pb-tax-rounding",
+  "failing_tests": [
+    {
+      "test": "tests.test_suites.test_checkout::test_order_summary_totals_are_correct[chromium]",
+      "kind": "failure",
+      "message": "AssertionError: Total mismatch. Item(50.49) + Tax(4.03) != Total(54.53)"
+    }
+  ],
+  "source": "injected",
+  "run_url": "https://github.com/asifmahbubnaeem/tfa-failure-lab/actions/runs/45136096025",
+  "collected_at": "2026-11-23T08:08:52Z",
+  "labelled_by": "construction (fault switch or patch)"
+}

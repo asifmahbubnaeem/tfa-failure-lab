@@ -1,0 +1,183 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-9.2.0, pluggy-1.7.0
+rootdir: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.16.0, xdist-3.8.0, allure-pytest-2.16.2, html-4.2.0, Faker-40.63.0, playwright-0.10.0, metadata-3.1.1
+collected 21 items
+
+tests/test_suites/test_auth.py ........                                  [ 38%]
+tests/test_suites/test_cart.py ....                                      [ 57%]
+tests/test_suites/test_catalog.py .....                                  [ 80%]
+tests/test_suites/test_checkout.py 
+[screenshot] Failure screenshot saved: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/screenshots/test_complete_purchase_with_valid_details[chromium].png
+
+F.
+[screenshot] Failure screenshot saved: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/screenshots/test_order_summary_totals_are_correct[chromium].png
+
+F
+[screenshot] Failure screenshot saved: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/screenshots/test_confirmation_screen_content[chromium].png
+
+F                                  [100%]
+
+=================================== FAILURES ===================================
+_____________ test_complete_purchase_with_valid_details[chromium] ______________
+
+page = <Page url='http://127.0.0.1:8000/checkout-step-two.html'>
+
+    def test_complete_purchase_with_valid_details(page: Page):
+        _start_checkout(page)
+        step_one = CheckoutStepOnePage(page)
+        checkout_user = random_checkout_user()
+        step_one.fill_checkout_form(
+            checkout_user.first_name, checkout_user.last_name, checkout_user.postal_code
+        )
+        step_one.continue_to_step_two()
+        step_two = CheckoutStepTwoPage(page)
+>       step_two.finish_order()
+
+tests/test_suites/test_checkout.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/pages/checkout_step_two_page.py:34: in finish_order
+    self.page.click(self.FINISH_BUTTON)
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/sync_api/_generated.py:16300: in click
+    self._sync(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/page.py:1125: in click
+    return await self._main_frame.click(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/frame.py:587: in click
+    return await self._channel.click(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:387: in finish
+    raise e from None
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:352: in finish
+    result = await zone.run_async(lambda: awaitable)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl.utils.zones.Zone object at 0x7cd3deb6d100>
+func = <function ChannelOwner._wrap_api_call.<locals>.finish.<locals>.<lambda> at 0x7cd3de98d580>
+
+    async def run_async(self, func: Callable[[], Awaitable[R]]) -> R:
+        # Python: run() of an async function. The coroutine runs when it is awaited,
+        # so the zone must be current while it is awaited, not while it is created.
+        token = _async_local_storage.set(self)
+        try:
+>           return await func()
+                   ^^^^^^^^^^^^
+E           playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator("[data-test='finish']")
+
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/utils/zones.py:58: TimeoutError
+_______________ test_order_summary_totals_are_correct[chromium] ________________
+
+page = <Page url='http://127.0.0.1:8000/checkout-step-two.html'>
+
+    def test_order_summary_totals_are_correct(page: Page):
+        _start_checkout(page)
+        step_one = CheckoutStepOnePage(page)
+        checkout_user = random_checkout_user()
+        step_one.fill_checkout_form(
+            checkout_user.first_name, checkout_user.last_name, checkout_user.postal_code
+        )
+        step_one.continue_to_step_two()
+        step_two = CheckoutStepTwoPage(page)
+>       item_total = step_two.get_item_total()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_suites/test_checkout.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/pages/checkout_step_two_page.py:22: in get_item_total
+    text = self.page.inner_text(self.ITEM_TOTAL)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/sync_api/_generated.py:18720: in inner_text
+    self._sync(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/page.py:1357: in inner_text
+    return await self._main_frame.inner_text(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/frame.py:903: in inner_text
+    await self._channel.innerText(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:398: in _mapped
+    return mapper(await awaitable)
+                  ^^^^^^^^^^^^^^^
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:387: in finish
+    raise e from None
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:352: in finish
+    result = await zone.run_async(lambda: awaitable)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl.utils.zones.Zone object at 0x7cd3deb66090>
+func = <function ChannelOwner._wrap_api_call.<locals>.finish.<locals>.<lambda> at 0x7cd3de950d60>
+
+    async def run_async(self, func: Callable[[], Awaitable[R]]) -> R:
+        # Python: run() of an async function. The coroutine runs when it is awaited,
+        # so the zone must be current while it is awaited, not while it is created.
+        token = _async_local_storage.set(self)
+        try:
+>           return await func()
+                   ^^^^^^^^^^^^
+E           playwright._impl._errors.TimeoutError: Page.inner_text: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator(".summary_subtotal_label")
+
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/utils/zones.py:58: TimeoutError
+__________________ test_confirmation_screen_content[chromium] __________________
+
+page = <Page url='http://127.0.0.1:8000/checkout-step-two.html'>
+
+    def test_confirmation_screen_content(page: Page):
+        _start_checkout(page)
+        step_one = CheckoutStepOnePage(page)
+        checkout_user = random_checkout_user()
+        step_one.fill_checkout_form(
+            checkout_user.first_name, checkout_user.last_name, checkout_user.postal_code
+        )
+        step_one.continue_to_step_two()
+        step_two = CheckoutStepTwoPage(page)
+>       step_two.finish_order()
+
+tests/test_suites/test_checkout.py:84: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/pages/checkout_step_two_page.py:34: in finish_order
+    self.page.click(self.FINISH_BUTTON)
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/sync_api/_generated.py:16300: in click
+    self._sync(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/page.py:1125: in click
+    return await self._main_frame.click(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/frame.py:587: in click
+    return await self._channel.click(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:387: in finish
+    raise e from None
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:352: in finish
+    result = await zone.run_async(lambda: awaitable)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl.utils.zones.Zone object at 0x7cd3deb5b980>
+func = <function ChannelOwner._wrap_api_call.<locals>.finish.<locals>.<lambda> at 0x7cd3de5dd080>
+
+    async def run_async(self, func: Callable[[], Awaitable[R]]) -> R:
+        # Python: run() of an async function. The coroutine runs when it is awaited,
+        # so the zone must be current while it is awaited, not while it is created.
+        token = _async_local_storage.set(self)
+        try:
+>           return await func()
+                   ^^^^^^^^^^^^
+E           playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator("[data-test='finish']")
+
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/utils/zones.py:58: TimeoutError
+- generated xml file: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/junit.xml -
+- Generated html report: file:///home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/html/report.html -
+=========================== short test summary info ============================
+FAILED tests/test_suites/test_checkout.py::test_complete_purchase_with_valid_details[chromium] - playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator("[data-test='finish']")
+FAILED tests/test_suites/test_checkout.py::test_order_summary_totals_are_correct[chromium] - playwright._impl._errors.TimeoutError: Page.inner_text: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator(".summary_subtotal_label")
+FAILED tests/test_suites/test_checkout.py::test_confirmation_screen_content[chromium] - playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator("[data-test='finish']")
+=================== 3 failed, 18 passed in 97.78s (0:01:37) ====================
+##[error]Process completed with exit code 1.

@@ -1,0 +1,82 @@
+{
+  "case_id": "case-0024",
+  "category": "environment",
+  "root_cause": "The shop cannot reach its Postgres database, so every page after login fails",
+  "scenario": "env-database-down",
+  "failing_tests": [
+    {
+      "test": "tests.test_suites.test_auth::test_logout_and_session_persistence[chromium]",
+      "kind": "failure",
+      "message": "playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#menu-button\")"
+    },
+    {
+      "test": "tests.test_suites.test_cart::test_add_single_item_updates_cart_badge[chromium]",
+      "kind": "failure",
+      "message": "IndexError: list index out of range"
+    },
+    {
+      "test": "tests.test_suites.test_cart::test_add_multiple_items_appear_in_cart[chromium]",
+      "kind": "failure",
+      "message": "playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".shopping_cart_link\")"
+    },
+    {
+      "test": "tests.test_suites.test_cart::test_remove_item_updates_cart[chromium]",
+      "kind": "failure",
+      "message": "playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".shopping_cart_link\")"
+    },
+    {
+      "test": "tests.test_suites.test_cart::test_cart_persists_across_navigation[chromium]",
+      "kind": "failure",
+      "message": "IndexError: list index out of range"
+    },
+    {
+      "test": "tests.test_suites.test_catalog::test_product_listing_loads_correctly[chromium]",
+      "kind": "failure",
+      "message": "assert 0 > 0\n +  where 0 = get_product_count()\n +    where get_product_count = <tests.pages.inventory_page.InventoryPage object at 0x7257e42d9ac0>.get_product_count"
+    },
+    {
+      "test": "tests.test_suites.test_catalog::test_sort_by_name_az[chromium]",
+      "kind": "failure",
+      "message": "playwright._impl._errors.TimeoutError: Page.select_option: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".select_container select, select[data-test='product_sort_container'], select.product_sort_container\")"
+    },
+    {
+      "test": "tests.test_suites.test_catalog::test_sort_by_name_za[chromium]",
+      "kind": "failure",
+      "message": "playwright._impl._errors.TimeoutError: Page.select_option: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".select_container select, select[data-test='product_sort_container'], select.product_sort_container\")"
+    },
+    {
+      "test": "tests.test_suites.test_catalog::test_sort_by_price_low_high[chromium]",
+      "kind": "failure",
+      "message": "playwright._impl._errors.TimeoutError: Page.select_option: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".select_container select, select[data-test='product_sort_container'], select.product_sort_container\")"
+    },
+    {
+      "test": "tests.test_suites.test_catalog::test_sort_by_price_high_low[chromium]",
+      "kind": "failure",
+      "message": "playwright._impl._errors.TimeoutError: Page.select_option: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".select_container select, select[data-test='product_sort_container'], select.product_sort_container\")"
+    },
+    {
+      "test": "tests.test_suites.test_checkout::test_complete_purchase_with_valid_details[chromium]",
+      "kind": "failure",
+      "message": "playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".shopping_cart_link\")"
+    },
+    {
+      "test": "tests.test_suites.test_checkout::test_checkout_blocked_when_required_fields_missing[chromium]",
+      "kind": "failure",
+      "message": "playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".shopping_cart_link\")"
+    },
+    {
+      "test": "tests.test_suites.test_checkout::test_order_summary_totals_are_correct[chromium]",
+      "kind": "failure",
+      "message": "playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".shopping_cart_link\")"
+    },
+    {
+      "test": "tests.test_suites.test_checkout::test_confirmation_screen_content[chromium]",
+      "kind": "failure",
+      "message": "playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".shopping_cart_link\")"
+    }
+  ],
+  "source": "injected",
+  "run_url": "https://github.com/asifmahbubnaeem/tfa-failure-lab/actions/runs/45136987205",
+  "collected_at": "2026-11-23T08:23:43Z",
+  "labelled_by": "construction (fault switch or patch)"
+}

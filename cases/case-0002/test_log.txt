@@ -1,0 +1,71 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-9.2.0, pluggy-1.7.0
+rootdir: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite
+configfile: pyproject.toml
+testpaths: tests
+plugins: html-4.2.0, metadata-3.1.1, allure-pytest-2.16.2, playwright-0.10.0, Faker-40.63.0, anyio-4.16.0, xdist-3.8.0
+collected 21 items
+
+tests/test_suites/test_auth.py ........                                  [ 38%]
+tests/test_suites/test_cart.py ....                                      [ 57%]
+tests/test_suites/test_catalog.py ...
+[screenshot] Failure screenshot saved: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/screenshots/test_sort_by_price_low_high[chromium].png
+
+F
+[screenshot] Failure screenshot saved: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/screenshots/test_sort_by_price_high_low[chromium].png
+
+F                                  [ 80%]
+tests/test_suites/test_checkout.py ....                                  [100%]
+
+=================================== FAILURES ===================================
+____________________ test_sort_by_price_low_high[chromium] _____________________
+
+page = <Page url='http://127.0.0.1:8000/inventory.html'>
+
+    def test_sort_by_price_low_high(page: Page):
+        inventory_page = _login_as(page, "standard_user")
+        inventory_page.sort_by("lohi")
+        prices = inventory_page.get_product_prices()
+>       assert_sorted(prices)
+
+tests/test_suites/test_catalog.py:42: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+values = [12.49, 15.99, 24.99, 34.5, 79.0, 9.99], reverse = False
+
+    def assert_sorted(values: List, reverse: bool = False) -> None:
+        expected = sorted(values, reverse=reverse)
+>       assert values == expected, f"Expected sorted={expected}, got={values}"
+               ^^^^^^^^^^^^^^^^^^
+E       AssertionError: Expected sorted=[9.99, 12.49, 15.99, 24.99, 34.5, 79.0], got=[12.49, 15.99, 24.99, 34.5, 79.0, 9.99]
+
+tests/utils/assertions.py:7: AssertionError
+____________________ test_sort_by_price_high_low[chromium] _____________________
+
+page = <Page url='http://127.0.0.1:8000/inventory.html'>
+
+    def test_sort_by_price_high_low(page: Page):
+        inventory_page = _login_as(page, "standard_user")
+        inventory_page.sort_by("hilo")
+        prices = inventory_page.get_product_prices()
+>       assert_sorted(prices, reverse=True)
+
+tests/test_suites/test_catalog.py:49: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+values = [9.99, 79.0, 34.5, 24.99, 15.99, 12.49], reverse = True
+
+    def assert_sorted(values: List, reverse: bool = False) -> None:
+        expected = sorted(values, reverse=reverse)
+>       assert values == expected, f"Expected sorted={expected}, got={values}"
+               ^^^^^^^^^^^^^^^^^^
+E       AssertionError: Expected sorted=[79.0, 34.5, 24.99, 15.99, 12.49, 9.99], got=[9.99, 79.0, 34.5, 24.99, 15.99, 12.49]
+
+tests/utils/assertions.py:7: AssertionError
+- generated xml file: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/junit.xml -
+- Generated html report: file:///home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/html/report.html -
+=========================== short test summary info ============================
+FAILED tests/test_suites/test_catalog.py::test_sort_by_price_low_high[chromium] - AssertionError: Expected sorted=[9.99, 12.49, 15.99, 24.99, 34.5, 79.0], got=[12.49, 15.99, 24.99, 34.5, 79.0, 9.99]
+FAILED tests/test_suites/test_catalog.py::test_sort_by_price_high_low[chromium] - AssertionError: Expected sorted=[79.0, 34.5, 24.99, 15.99, 12.49, 9.99], got=[9.99, 79.0, 34.5, 24.99, 15.99, 12.49]
+========================= 2 failed, 19 passed in 9.45s =========================
+##[error]Process completed with exit code 1.

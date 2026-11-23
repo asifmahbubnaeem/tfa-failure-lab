@@ -1,0 +1,27 @@
+{
+  "case_id": "case-0022",
+  "category": "environment",
+  "root_cause": "TAX_RATE is not configured, so the checkout overview page crashes with KeyError",
+  "scenario": "env-tax-rate-missing",
+  "failing_tests": [
+    {
+      "test": "tests.test_suites.test_checkout::test_complete_purchase_with_valid_details[chromium]",
+      "kind": "failure",
+      "message": "playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"[data-test='finish']\")"
+    },
+    {
+      "test": "tests.test_suites.test_checkout::test_order_summary_totals_are_correct[chromium]",
+      "kind": "failure",
+      "message": "playwright._impl._errors.TimeoutError: Page.inner_text: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".summary_subtotal_label\")"
+    },
+    {
+      "test": "tests.test_suites.test_checkout::test_confirmation_screen_content[chromium]",
+      "kind": "failure",
+      "message": "playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"[data-test='finish']\")"
+    }
+  ],
+  "source": "injected",
+  "run_url": "https://github.com/asifmahbubnaeem/tfa-failure-lab/actions/runs/45139765168",
+  "collected_at": "2026-11-23T08:37:40Z",
+  "labelled_by": "construction (fault switch or patch)"
+}

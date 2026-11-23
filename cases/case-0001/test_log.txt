@@ -1,0 +1,65 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-9.2.0, pluggy-1.7.0
+rootdir: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.16.0, xdist-3.8.0, allure-pytest-2.16.2, html-4.2.0, Faker-40.63.0, playwright-0.10.0, metadata-3.1.1
+collected 21 items
+
+tests/test_suites/test_auth.py ........                                  [ 38%]
+tests/test_suites/test_cart.py ....                                      [ 57%]
+tests/test_suites/test_catalog.py .....                                  [ 80%]
+tests/test_suites/test_checkout.py ..
+[screenshot] Failure screenshot saved: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/screenshots/test_order_summary_totals_are_correct[chromium].png
+
+F.                                  [100%]
+
+=================================== FAILURES ===================================
+_______________ test_order_summary_totals_are_correct[chromium] ________________
+
+page = <Page url='http://127.0.0.1:8000/checkout-step-two.html'>
+
+    def test_order_summary_totals_are_correct(page: Page):
+        _start_checkout(page)
+        step_one = CheckoutStepOnePage(page)
+        checkout_user = random_checkout_user()
+        step_one.fill_checkout_form(
+            checkout_user.first_name, checkout_user.last_name, checkout_user.postal_code
+        )
+        step_one.continue_to_step_two()
+        step_two = CheckoutStepTwoPage(page)
+        item_total = step_two.get_item_total()
+        tax = step_two.get_tax()
+        total = step_two.get_total()
+        # Reconstruct item prices from cart page
+        page.click(".cart_item_label")  # navigate not necessary; we reuse totals directly
+        # Since we do not have individual prices here, we assert internal consistency of UI totals
+>       assert_order_totals_correct([item_total], item_total, tax, total)
+
+tests/test_suites/test_checkout.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item_prices = [Decimal('50.49')], ui_item_total = Decimal('50.49')
+ui_tax = Decimal('4.03'), ui_total = Decimal('54.53')
+
+    def assert_order_totals_correct(
+        item_prices: Iterable[Decimal], ui_item_total: Decimal, ui_tax: Decimal, ui_total: Decimal
+    ) -> None:
+        calculated_item_total = sum(item_prices)
+        # SauceDemo uses a fixed tax rate of 8% in the UI, but we assert using the UI values to avoid brittleness.
+        assert calculated_item_total == ui_item_total, (
+            f"Item total mismatch. Calculated={calculated_item_total}, UI={ui_item_total}"
+        )
+>       assert ui_item_total + ui_tax == ui_total, (
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            f"Total mismatch. Item({ui_item_total}) + Tax({ui_tax}) != Total({ui_total})"
+        )
+E       AssertionError: Total mismatch. Item(50.49) + Tax(4.03) != Total(54.53)
+
+tests/utils/assertions.py:22: AssertionError
+- generated xml file: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/junit.xml -
+- Generated html report: file:///home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/html/report.html -
+=========================== short test summary info ============================
+FAILED tests/test_suites/test_checkout.py::test_order_summary_totals_are_correct[chromium] - AssertionError: Total mismatch. Item(50.49) + Tax(4.03) != Total(54.53)
+======================== 1 failed, 20 passed in 10.30s =========================
+##[error]Process completed with exit code 1.

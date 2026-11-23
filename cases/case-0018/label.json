@@ -1,0 +1,32 @@
+{
+  "case_id": "case-0018",
+  "category": "flaky",
+  "root_cause": "Cart API intermittently returns HTTP 500, so different cart tests fail on different runs",
+  "scenario": "fl-cart-api-500",
+  "failing_tests": [
+    {
+      "test": "tests.test_suites.test_cart::test_add_multiple_items_appear_in_cart[chromium]",
+      "kind": "failure",
+      "message": "AssertionError: assert 'Desk Lamp' in ['Canvas Tote Bag']"
+    },
+    {
+      "test": "tests.test_suites.test_cart::test_remove_item_updates_cart[chromium]",
+      "kind": "failure",
+      "message": "playwright._impl._errors.TimeoutError: Locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".cart_item\").filter(has_text=\"Canvas Tote Bag\").locator(\"button[data-test^='remove-']\")"
+    },
+    {
+      "test": "tests.test_suites.test_cart::test_cart_persists_across_navigation[chromium]",
+      "kind": "failure",
+      "message": "AssertionError: assert 'Canvas Tote Bag' in []"
+    },
+    {
+      "test": "tests.test_suites.test_checkout::test_order_summary_totals_are_correct[chromium]",
+      "kind": "failure",
+      "message": "playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".cart_item_label\")"
+    }
+  ],
+  "source": "injected",
+  "run_url": "https://github.com/asifmahbubnaeem/tfa-failure-lab/actions/runs/45136903478",
+  "collected_at": "2026-11-23T08:21:37Z",
+  "labelled_by": "construction (fault switch or patch)"
+}

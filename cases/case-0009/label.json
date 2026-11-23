@@ -1,0 +1,17 @@
+{
+  "case_id": "case-0009",
+  "category": "product_bug",
+  "root_cause": "Checkout accepts empty name and postal code instead of showing an error",
+  "scenario": "pb-checkout-validation",
+  "failing_tests": [
+    {
+      "test": "tests.test_suites.test_checkout::test_checkout_blocked_when_required_fields_missing[chromium]",
+      "kind": "failure",
+      "message": "playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 10000ms exceeded.\nCall log:\n  - waiting for locator(\"[data-test='error']\") to be visible"
+    }
+  ],
+  "source": "injected",
+  "run_url": "https://github.com/asifmahbubnaeem/tfa-failure-lab/actions/runs/45136811444",
+  "collected_at": "2026-11-23T08:17:05Z",
+  "labelled_by": "construction (fault switch or patch)"
+}
