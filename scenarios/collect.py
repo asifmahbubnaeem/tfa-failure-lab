@@ -41,6 +41,7 @@ ROOT = HERE.parent
 # Anything that names an injected fault. Must never appear in a file the agent reads.
 LEAK = re.compile(r"BUG_[A-Z_]+|FLAKY_[A-Z_]+|fault on|scenarios/patches|patched suite|suite_patch|unset_tax_rate|break_database|case_id", re.I)
 TIMESTAMP = re.compile(r"^\d{4}-\d\d-\d\dT[\d:.]+Z ?")
+ANSI = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
 
 
 def gh(*args: str, check: bool = True) -> str:
@@ -104,7 +105,9 @@ def strip_test_step_log(full_log: str) -> str:
     for raw in full_log.splitlines():
         parts = raw.split("\t", 2)
         if len(parts) == 3 and parts[1] == TEST_STEP:
-            lines.append(TIMESTAMP.sub("", parts[2]))
+            # GitHub prefixes a step's first line with a byte-order mark, and colours some lines.
+            text = parts[2].lstrip("\ufeff")
+            lines.append(ANSI.sub("", TIMESTAMP.sub("", text)))
     out, in_header = [], False
     for line in lines:
         if line.startswith("##[group]"):
