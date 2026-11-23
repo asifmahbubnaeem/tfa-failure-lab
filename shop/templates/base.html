@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Lab Shop</title>
+  <link rel="stylesheet" href="/static/shop.css">
+</head>
+<body>
+  <header class="topbar">
+    <span class="brand">Lab Shop</span>
+    {% block nav %}
+    <nav class="right">
+      <button id="menu-button" data-test="open-menu" type="button"
+              onclick="document.getElementById('menu').hidden = !document.getElementById('menu').hidden">Menu</button>
+      <a class="shopping_cart_link" data-test="shopping-cart-link" href="/cart.html">Cart
+        {% if cart_count %}<span class="shopping_cart_badge" data-test="shopping-cart-badge">{{ cart_count }}</span>{% endif %}
+      </a>
+      <div id="menu" class="menu" hidden>
+        <a id="inventory-link" href="/inventory.html">All items</a>
+        <a id="logout-link" data-test="logout" href="/logout">Log out</a>
+      </div>
+    </nav>
+    {% endblock %}
+  </header>
+  <main>{% block content %}{% endblock %}</main>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+shop.log
+suite/reports/
+suite/test-results/
+*.egg-info/
+build/

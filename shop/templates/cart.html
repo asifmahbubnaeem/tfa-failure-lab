@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Your cart</h1>
+<div class="cart_list">
+  {% for i in items %}
+  <div class="cart_item" data-test="cart-item">
+    <div class="cart_item_label">
+      <div class="inventory_item_name" data-test="inventory-item-name">{{ i.name }}</div>
+      <div class="inventory_item_price">{{ money(i.price) }}</div>
+    </div>
+    <button class="btn" data-slug="{{ i.slug }}" data-test="remove-{{ i.slug }}" onclick="removeFromCartPage(this)">Remove</button>
+  </div>
+  {% endfor %}
+</div>
+<div class="actions">
+  <button id="continue-shopping" data-test="continue-shopping" onclick="location.href='/inventory.html'">Continue shopping</button>
+  <button id="checkout" data-test="checkout" onclick="location.href='/checkout-step-one.html'">Checkout</button>
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/shop.js"></script>{% endblock %}

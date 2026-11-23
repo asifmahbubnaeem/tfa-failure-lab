@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Checkout: overview</h1>
+<div class="cart_list">
+  {% for i in items %}
+  <div class="cart_item" data-test="cart-item">
+    <div class="cart_item_label">
+      <div class="inventory_item_name">{{ i.name }}</div>
+      <div class="inventory_item_price">{{ money(i.price) }}</div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<div class="summary_info">
+  <div class="summary_subtotal_label" data-test="subtotal-label">Item total: {{ money(subtotal) }}</div>
+  <div class="summary_tax_label" data-test="tax-label">Tax: {{ money(tax) }}</div>
+  <div class="summary_total_label" data-test="total-label">Total: {{ money(total) }}</div>
+</div>
+<form method="post" action="/checkout-step-two.html">
+  <button id="finish" data-test="finish" type="submit">Finish</button>
+</form>
+{% endblock %}

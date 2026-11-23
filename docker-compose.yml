@@ -1,0 +1,10 @@
+# Local Postgres for Lab Shop:  docker compose up -d
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: lab
+      POSTGRES_PASSWORD: lab
+      POSTGRES_DB: labshop
+    ports:
+      - "5433:5432"

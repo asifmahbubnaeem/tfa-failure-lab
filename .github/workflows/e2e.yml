@@ -1,0 +1,100 @@
+name: e2e
+
+# Runs the Lab Shop e2e suite. On push it runs clean (no faults) and must pass.
+# Run it by hand ("Run workflow") with `faults` set to break the shop on purpose,
+# e.g.  BUG_TAX_ROUNDING=1   or   FLAKY_API_500_PCT=40   (see shop/faults.py).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      faults:
+        description: "Fault switches, space separated, e.g. BUG_SORT_PRICE=1 FLAKY_PCT=30"
+        required: false
+        default: ""
+      unset_tax_rate:
+        description: "Start the shop without TAX_RATE (environment failure)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: lab
+          POSTGRES_PASSWORD: lab
+          POSTGRES_DB: labshop
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U lab -d labshop"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://lab:lab@localhost:5432/labshop
+      ENV: ci
+      E2E_SITE: labshop
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Apply fault switches
+        env:
+          FAULTS: ${{ inputs.faults }}
+          UNSET_TAX: ${{ inputs.unset_tax_rate }}
+        run: |
+          set -euo pipefail
+          for kv in $FAULTS; do
+            if [[ ! "$kv" =~ ^(BUG|FLAKY)_[A-Z0-9_]+=[A-Za-z0-9,]+$ ]]; then
+              echo "::error::Not a fault switch: $kv"; exit 1
+            fi
+            echo "$kv" >> "$GITHUB_ENV"
+            echo "fault on: $kv"
+          done
+          if [ "${UNSET_TAX:-false}" = "true" ]; then
+            echo "fault on: TAX_RATE unset"
+          else
+            echo "TAX_RATE=0.08" >> "$GITHUB_ENV"
+          fi
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r shop/requirements.txt
+          pip install ./suite
+          python -m playwright install --with-deps chromium
+
+      - name: Start Lab Shop
+        run: |
+          nohup python -m uvicorn shop.app:app --port 8000 > shop.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf http://127.0.0.1:8000/healthz && exit 0
+            sleep 1
+          done
+          echo "::error::Lab Shop did not become healthy"; cat shop.log; exit 1
+
+      - name: Run e2e suite
+        working-directory: suite
+        run: python -m pytest --junitxml=reports/junit.xml -p no:cacheprovider
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-reports
+          path: |
+            suite/reports/junit.xml
+            suite/reports/html/
+            suite/reports/screenshots/
+            shop.log
+          if-no-files-found: ignore
