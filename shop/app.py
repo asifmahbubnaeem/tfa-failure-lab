@@ -42,8 +42,8 @@ templates = Jinja2Templates(directory=HERE / "templates")
 
 @app.on_event("startup")
 def startup() -> None:
-    # Keep trying briefly, but never refuse to start: a missing database should show up as
-    # failing pages (an environment failure), not as a shop that never came up.
+    # Keep trying briefly, but never refuse to start: without a database the pages that need it
+    # fail, while the shop itself stays up.
     for attempt in range(10):
         try:
             db.init()
@@ -72,7 +72,7 @@ def money(d: Decimal) -> str:
 
 
 def totals(items: list[dict]) -> tuple[Decimal, Decimal, Decimal]:
-    rate = Decimal(os.environ["TAX_RATE"])  # no default on purpose: unset = environment failure
+    rate = Decimal(os.environ["TAX_RATE"])
     subtotal = sum((i["price"] for i in items), Decimal("0"))
     if faults.on("BUG_TAX_ROUNDING"):
         tax = (subtotal * rate).quantize(CENT, rounding=ROUND_DOWN)

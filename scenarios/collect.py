@@ -39,16 +39,24 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 
 # Anything that names an injected fault. Must never appear in a file the agent reads.
-LEAK = re.compile(r"BUG_[A-Z_]+|FLAKY_[A-Z_]+|fault on|scenarios/patches|patched suite|suite_patch|unset_tax_rate|break_database|case_id", re.I)
+LEAK = re.compile(
+    r"\bBUG_[A-Z_]+|\bFLAKY_[A-Z_]+|\bfault on\b|scenarios/patches|patched suite|suite_patch|unset_tax_rate|"
+    r"break_database|\bcase_id\b|environment failure|product bug|test bug|flaky",
+    re.I,
+)
 TIMESTAMP = re.compile(r"^\d{4}-\d\d-\d\dT[\d:.]+Z ?")
 ANSI = re.compile(r"\x1b\[[0-9;]*[A-Za-z]")
 
 
-def gh(*args: str, check: bool = True) -> str:
-    proc = subprocess.run(["gh", *args], capture_output=True, text=True)
-    if check and proc.returncode != 0:
-        raise RuntimeError(f"gh {' '.join(args)} failed:\n{proc.stderr.strip()}")
-    return proc.stdout
+def gh(*args: str, check: bool = True, tries: int = 3) -> str:
+    """Run gh, retrying network blips (artifact downloads hit a separate storage host)."""
+    for attempt in range(1, tries + 1):
+        proc = subprocess.run(["gh", *args], capture_output=True, text=True)
+        if proc.returncode == 0 or not check:
+            return proc.stdout
+        if attempt < tries:
+            time.sleep(10 * attempt)
+    raise RuntimeError(f"gh {' '.join(args)} failed after {tries} tries:\n{proc.stderr.strip()}")
 
 
 def load_scenarios() -> list[dict]:
