@@ -1,4 +1,5 @@
 name: e2e
+run-name: ${{ inputs.case_id || github.event.head_commit.message || 'e2e' }}
 
 # Runs the Lab Shop e2e suite. On push it runs clean (no faults) and must pass.
 # Run it by hand ("Run workflow") with `faults` set to break the shop on purpose,
@@ -18,6 +19,18 @@ on:
         description: "Start the shop without TAX_RATE (environment failure)"
         type: boolean
         default: false
+      break_database:
+        description: "Point the shop at a database port that isn't there (environment failure)"
+        type: boolean
+        default: false
+      suite_patch:
+        description: "Name of a patch in scenarios/patches/ to apply to the suite (test bug), without .patch"
+        required: false
+        default: ""
+      case_id:
+        description: "Label for this run (used by scenarios/collect.py to find it)"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -38,7 +51,6 @@ jobs:
           --health-cmd "pg_isready -U lab -d labshop"
           --health-interval 5s --health-timeout 5s --health-retries 10
     env:
-      DATABASE_URL: postgresql://lab:lab@localhost:5432/labshop
       ENV: ci
       E2E_SITE: labshop
     steps:
@@ -52,6 +64,7 @@ jobs:
         env:
           FAULTS: ${{ inputs.faults }}
           UNSET_TAX: ${{ inputs.unset_tax_rate }}
+          BREAK_DB: ${{ inputs.break_database }}
         run: |
           set -euo pipefail
           for kv in $FAULTS; do
@@ -61,11 +74,29 @@ jobs:
             echo "$kv" >> "$GITHUB_ENV"
             echo "fault on: $kv"
           done
+          if [ "${BREAK_DB:-false}" = "true" ]; then
+            echo "DATABASE_URL=postgresql://lab:lab@localhost:5999/labshop" >> "$GITHUB_ENV"
+            echo "fault on: database unreachable"
+          else
+            echo "DATABASE_URL=postgresql://lab:lab@localhost:5432/labshop" >> "$GITHUB_ENV"
+          fi
           if [ "${UNSET_TAX:-false}" = "true" ]; then
             echo "fault on: TAX_RATE unset"
           else
             echo "TAX_RATE=0.08" >> "$GITHUB_ENV"
           fi
+
+      - name: Apply test patch
+        if: inputs.suite_patch != ''
+        env:
+          PATCH: ${{ inputs.suite_patch }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$PATCH" =~ ^[a-z0-9-]+$ ]] || [ ! -f "scenarios/patches/$PATCH.patch" ]; then
+            echo "::error::No such patch: $PATCH"; exit 1
+          fi
+          git apply "scenarios/patches/$PATCH.patch"
+          echo "patched suite with $PATCH"
 
       - name: Install
         run: |
@@ -77,11 +108,16 @@ jobs:
       - name: Start Lab Shop
         run: |
           nohup python -m uvicorn shop.app:app --port 8000 > shop.log 2>&1 &
+          # Wait for the login page, which works without the database, so an environment
+          # fault (database down) reaches the tests instead of stopping the job here.
           for i in $(seq 1 30); do
-            curl -sf http://127.0.0.1:8000/healthz && exit 0
+            if curl -sf -o /dev/null http://127.0.0.1:8000/; then
+              curl -s http://127.0.0.1:8000/healthz || true; echo
+              exit 0
+            fi
             sleep 1
           done
-          echo "::error::Lab Shop did not become healthy"; cat shop.log; exit 1
+          echo "::error::Lab Shop did not start"; cat shop.log; exit 1
 
       - name: Run e2e suite
         working-directory: suite

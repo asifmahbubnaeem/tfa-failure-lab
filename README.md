@@ -39,9 +39,26 @@ parallel workers), and each switch fails exactly the tests listed.
 ## Run it in GitHub Actions
 
 Pushes run the suite clean; it must pass. To break the shop, open **Actions → e2e → Run
-workflow** and fill in `faults`, for example `BUG_TAX_ROUNDING=1`, or tick `unset_tax_rate`.
+workflow** and fill in `faults` (for example `BUG_TAX_ROUNDING=1`), tick `unset_tax_rate` or
+`break_database`, or name a test patch in `suite_patch`.
 Reports (JUnit XML, HTML, screenshots) and the shop log are uploaded as the `e2e-reports`
 artifact.
+
+## Collect labelled eval cases
+
+`scenarios/scenarios.toml` lists 12 scenarios: 4 product bugs, 4 test bugs (patches in
+`scenarios/patches/`), 2 flaky modes and 2 environment faults. `scenarios/collect.py` runs them
+in GitHub Actions through the GitHub CLI and saves each failed run as a case:
+
+```sh
+python3 scenarios/collect.py --list
+python3 scenarios/collect.py --only pb-tax-rounding
+python3 scenarios/collect.py --all --runs 2
+```
+
+Each case goes to `cases/case-NNNN/` with `junit.xml`, `test_log.txt` (the test step's log
+only), `shop.log` and `label.json`. Folder names are neutral and the files the agent reads are
+checked so that nothing names the injected fault; only `label.json` holds the answer.
 
 ## Run it locally
 

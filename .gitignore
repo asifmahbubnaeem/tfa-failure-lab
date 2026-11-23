@@ -8,3 +8,7 @@ suite/reports/
 suite/test-results/
 *.egg-info/
 build/
+
+# Downloaded CI artifacts
+e2e-reports/
+e2e-reports*.zip

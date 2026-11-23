@@ -1,0 +1,93 @@
+# Each scenario breaks the shop or the suite in one known way. collect.py runs it in GitHub
+# Actions and saves the failed run as a labelled eval case. The label comes from here; the agent
+# never sees this file.
+#
+# inputs   -> passed to the e2e workflow: faults, unset_tax_rate, break_database, suite_patch
+# attempts -> flaky scenarios may pass by chance; how many runs to try per wanted case
+
+
+# --- product_bug: the application is wrong
+
+
+[[scenario]]
+id = "pb-sort-price"
+category = "product_bug"
+root_cause = "Price sort compares prices as text, so $9.99 sorts after $79.00"
+inputs = { faults = "BUG_SORT_PRICE=1" }
+
+[[scenario]]
+id = "pb-tax-rounding"
+category = "product_bug"
+root_cause = "Tax is truncated to the cent but the total is rounded, so item total + tax != total"
+inputs = { faults = "BUG_TAX_ROUNDING=1" }
+
+[[scenario]]
+id = "pb-cart-remove"
+category = "product_bug"
+root_cause = "Removing an item from the cart does nothing on the server"
+inputs = { faults = "BUG_CART_REMOVE=1" }
+
+[[scenario]]
+id = "pb-checkout-validation"
+category = "product_bug"
+root_cause = "Checkout accepts empty name and postal code instead of showing an error"
+inputs = { faults = "BUG_CHECKOUT_VALIDATION=1" }
+
+# --- test_bug: the test code or test data is wrong
+
+
+[[scenario]]
+id = "tb-checkout-locator"
+category = "test_bug"
+root_cause = "CartPage uses locator [data-test='checkout-button'], but the button is [data-test='checkout']"
+inputs = { suite_patch = "tb-checkout-locator" }
+
+[[scenario]]
+id = "tb-confirmation-text"
+category = "test_bug"
+root_cause = "Test expects 'ORDER PLACED' but the page correctly says 'Thank you for your order!'"
+inputs = { suite_patch = "tb-confirmation-text" }
+
+[[scenario]]
+id = "tb-sort-direction"
+category = "test_bug"
+root_cause = "Z-to-A sort test asserts ascending order instead of descending"
+inputs = { suite_patch = "tb-sort-direction" }
+
+[[scenario]]
+id = "tb-password-typo"
+category = "test_bug"
+root_cause = "Test data has password 'lab_pasword' (typo) for standard_user, so every login fails"
+inputs = { suite_patch = "tb-password-typo" }
+
+# --- flaky: fails some runs, not others, with no change
+
+
+[[scenario]]
+id = "fl-cart-api-500"
+category = "flaky"
+root_cause = "Cart API intermittently returns HTTP 500, so different cart tests fail on different runs"
+attempts = 3
+inputs = { faults = "FLAKY_API_500_PCT=40" }
+
+[[scenario]]
+id = "fl-slow-inventory"
+category = "flaky"
+root_cause = "Product page intermittently takes 35 s, past Playwright's 30 s timeout"
+attempts = 3
+inputs = { faults = "FLAKY_PAGES=inventory FLAKY_PCT=25" }
+
+# --- environment: a dependency or configuration the tests rely on is missing
+
+
+[[scenario]]
+id = "env-tax-rate-missing"
+category = "environment"
+root_cause = "TAX_RATE is not configured, so the checkout overview page crashes with KeyError"
+inputs = { unset_tax_rate = true }
+
+[[scenario]]
+id = "env-database-down"
+category = "environment"
+root_cause = "The shop cannot reach its Postgres database, so every page after login fails"
+inputs = { break_database = true }

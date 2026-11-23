@@ -1,0 +1,13 @@
+diff --git a/suite/tests/pages/cart_page.py b/suite/tests/pages/cart_page.py
+index b7d3535..f675849 100644
+--- a/suite/tests/pages/cart_page.py
++++ b/suite/tests/pages/cart_page.py
+@@ -9,7 +9,7 @@ class CartPage(BasePage):
+     CART_ITEM = ".cart_item"
+     CART_ITEM_NAME = ".inventory_item_name"
+     REMOVE_BUTTON = "button[data-test^='remove-']"
+-    CHECKOUT_BUTTON = "[data-test='checkout']"
++    CHECKOUT_BUTTON = "[data-test='checkout-button']"
+ 
+     def __init__(self, page: Page) -> None:
+         super().__init__(page)

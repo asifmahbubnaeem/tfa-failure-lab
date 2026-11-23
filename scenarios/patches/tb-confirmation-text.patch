@@ -1,0 +1,11 @@
+diff --git a/suite/tests/test_suites/test_checkout.py b/suite/tests/test_suites/test_checkout.py
+index 69b67a4..fb12fb1 100644
+--- a/suite/tests/test_suites/test_checkout.py
++++ b/suite/tests/test_suites/test_checkout.py
+@@ -83,5 +83,5 @@ def test_confirmation_screen_content(page: Page):
+     step_two = CheckoutStepTwoPage(page)
+     step_two.finish_order()
+     complete = CheckoutCompletePage(page)
+-    assert "THANK YOU" in complete.get_confirmation_header_text().upper()
++    assert "ORDER PLACED" in complete.get_confirmation_header_text().upper()
+ 
