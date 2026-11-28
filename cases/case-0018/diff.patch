@@ -1,0 +1,12 @@
+diff --git a/shop/templates/base.html b/shop/templates/base.html
+index ba8c9f8..ea8de94 100644
+--- a/shop/templates/base.html
++++ b/shop/templates/base.html
+@@ -24,6 +24,7 @@
+     {% endblock %}
+   </header>
+   <main>{% block content %}{% endblock %}</main>
++  <footer class="site-footer">Lab Shop · prices include no shipping</footer>
+   {% block scripts %}{% endblock %}
+ </body>
+ </html>

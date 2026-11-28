@@ -1,0 +1,35 @@
+diff --git a/docker-compose.yml b/docker-compose.yml
+index e8a2ef7..4bd2634 100644
+--- a/docker-compose.yml
++++ b/docker-compose.yml
+@@ -1,4 +1,4 @@
+-# Local Postgres for Lab Shop:  docker compose up -d
++# Local Postgres for Lab Shop. Start it with:  docker compose up -d
+ services:
+   postgres:
+     image: postgres:17-alpine
+diff --git a/shop/app.py b/shop/app.py
+index b4f40db..88e4333 100644
+--- a/shop/app.py
++++ b/shop/app.py
+@@ -12,7 +12,7 @@ import logging
+ import os
+ import time
+ import uuid
+-from decimal import ROUND_HALF_UP, Decimal
++from decimal import ROUND_DOWN, ROUND_HALF_UP, Decimal
+ from pathlib import Path
+ 
+ from fastapi import FastAPI, Form, Request
+@@ -74,8 +74,9 @@ def money(d: Decimal) -> str:
+ def totals(items: list[dict]) -> tuple[Decimal, Decimal, Decimal]:
+     rate = Decimal(os.environ["TAX_RATE"])
+     subtotal = sum((i["price"] for i in items), Decimal("0"))
+-    tax = (subtotal * rate).quantize(CENT, rounding=ROUND_HALF_UP)
+-    total = subtotal + tax
++    # Round tax down so customers are never overcharged by a fraction of a cent.
++    tax = (subtotal * rate).quantize(CENT, rounding=ROUND_DOWN)
++    total = (subtotal * (1 + rate)).quantize(CENT, rounding=ROUND_HALF_UP)
+     return subtotal, tax, total
+ 
+ 

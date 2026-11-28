@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="1.239" timestamp="2026-11-28T12:36:04.970309+00:00" hostname="runnervm3lb7s"><testcase classname="tests.test_suites.test_checkout" name="test_order_summary_totals_are_correct[chromium]" time="1.082"><failure message="AssertionError: Total mismatch. Item(50.49) + Tax(4.03) != Total(54.53)">page = &lt;Page url='http://127.0.0.1:8000/checkout-step-two.html'&gt;
+
+    def test_order_summary_totals_are_correct(page: Page):
+        _start_checkout(page)
+        step_one = CheckoutStepOnePage(page)
+        checkout_user = random_checkout_user()
+        step_one.fill_checkout_form(
+            checkout_user.first_name, checkout_user.last_name, checkout_user.postal_code
+        )
+        step_one.continue_to_step_two()
+        step_two = CheckoutStepTwoPage(page)
+        item_total = step_two.get_item_total()
+        tax = step_two.get_tax()
+        total = step_two.get_total()
+        # Reconstruct item prices from cart page
+        page.click(".cart_item_label")  # navigate not necessary; we reuse totals directly
+        # Since we do not have individual prices here, we assert internal consistency of UI totals
+&gt;       assert_order_totals_correct([item_total], item_total, tax, total)
+
+tests/test_suites/test_checkout.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+item_prices = [Decimal('50.49')], ui_item_total = Decimal('50.49')
+ui_tax = Decimal('4.03'), ui_total = Decimal('54.53')
+
+    def assert_order_totals_correct(
+        item_prices: Iterable[Decimal], ui_item_total: Decimal, ui_tax: Decimal, ui_total: Decimal
+    ) -&gt; None:
+        calculated_item_total = sum(item_prices)
+        # SauceDemo uses a fixed tax rate of 8% in the UI, but we assert using the UI values to avoid brittleness.
+        assert calculated_item_total == ui_item_total, (
+            f"Item total mismatch. Calculated={calculated_item_total}, UI={ui_item_total}"
+        )
+&gt;       assert ui_item_total + ui_tax == ui_total, (
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            f"Total mismatch. Item({ui_item_total}) + Tax({ui_tax}) != Total({ui_total})"
+        )
+E       AssertionError: Total mismatch. Item(50.49) + Tax(4.03) != Total(54.53)
+
+tests/utils/assertions.py:22: AssertionError</failure></testcase></testsuite></testsuites>

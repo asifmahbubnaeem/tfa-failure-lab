@@ -1,0 +1,36 @@
+diff --git a/shop/app.py b/shop/app.py
+index b4f40db..88e4333 100644
+--- a/shop/app.py
++++ b/shop/app.py
+@@ -12,7 +12,7 @@ import logging
+ import os
+ import time
+ import uuid
+-from decimal import ROUND_HALF_UP, Decimal
++from decimal import ROUND_DOWN, ROUND_HALF_UP, Decimal
+ from pathlib import Path
+ 
+ from fastapi import FastAPI, Form, Request
+@@ -74,8 +74,9 @@ def money(d: Decimal) -> str:
+ def totals(items: list[dict]) -> tuple[Decimal, Decimal, Decimal]:
+     rate = Decimal(os.environ["TAX_RATE"])
+     subtotal = sum((i["price"] for i in items), Decimal("0"))
+-    tax = (subtotal * rate).quantize(CENT, rounding=ROUND_HALF_UP)
+-    total = subtotal + tax
++    # Round tax down so customers are never overcharged by a fraction of a cent.
++    tax = (subtotal * rate).quantize(CENT, rounding=ROUND_DOWN)
++    total = (subtotal * (1 + rate)).quantize(CENT, rounding=ROUND_HALF_UP)
+     return subtotal, tax, total
+ 
+ 
+diff --git a/suite/tests/utils/waits.py b/suite/tests/utils/waits.py
+index 2df5dc5..910d4db 100644
+--- a/suite/tests/utils/waits.py
++++ b/suite/tests/utils/waits.py
+@@ -2,5 +2,6 @@ from playwright.sync_api import Page
+ 
+ 
+ def wait_for_network_idle(page: Page, timeout: int = 10000) -> None:
++    """Wait until the page has had no network activity for 500 ms."""
+     page.wait_for_load_state("networkidle", timeout=timeout)
+ 

@@ -1,0 +1,12 @@
+{
+  "standard_user": {
+    "username": "standard_user",
+    "password": "lab_password",
+    "description": "Standard user with normal behaviour"
+  },
+  "locked_out_user": {
+    "username": "locked_out_user",
+    "password": "lab_password",
+    "description": "User that is locked out and cannot log in"
+  }
+}

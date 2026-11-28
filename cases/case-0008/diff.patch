@@ -1,0 +1,29 @@
+diff --git a/docker-compose.yml b/docker-compose.yml
+index e8a2ef7..4bd2634 100644
+--- a/docker-compose.yml
++++ b/docker-compose.yml
+@@ -1,4 +1,4 @@
+-# Local Postgres for Lab Shop:  docker compose up -d
++# Local Postgres for Lab Shop. Start it with:  docker compose up -d
+ services:
+   postgres:
+     image: postgres:17-alpine
+diff --git a/shop/app.py b/shop/app.py
+index b4f40db..f0a7d19 100644
+--- a/shop/app.py
++++ b/shop/app.py
+@@ -192,11 +192,11 @@ def checkout_one_submit(
+     if not user:
+         return to_login()
+     error = None
+-    if not firstName.strip():
++    if firstName is None:
+         error = "Error: First name is required."
+-    elif not lastName.strip():
++    elif lastName is None:
+         error = "Error: Last name is required."
+-    elif not postalCode.strip():
++    elif postalCode is None:
+         error = "Error: Postal code is required."
+     if error:
+         count = len(db.cart(cart_of(request)))

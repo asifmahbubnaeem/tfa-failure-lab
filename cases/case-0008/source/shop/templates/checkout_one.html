@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<form class="card" method="post" action="/checkout-step-one.html">
+  <h1>Checkout: your information</h1>
+  <input id="first-name" data-test="firstName" name="firstName" placeholder="First name" value="{{ first or '' }}">
+  <input id="last-name" data-test="lastName" name="lastName" placeholder="Last name" value="{{ last or '' }}">
+  <input id="postal-code" data-test="postalCode" name="postalCode" placeholder="Postal code" value="{{ postal or '' }}">
+  {% if error %}<div class="error" data-test="error">{{ error }}</div>{% endif %}
+  <input id="continue" data-test="continue" type="submit" value="Continue">
+</form>
+{% endblock %}

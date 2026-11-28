@@ -1,0 +1,24 @@
+{
+  "case_id": "case-0017",
+  "category": "flaky",
+  "root_cause": "Cart API intermittently returns HTTP 500, so different cart tests fail on different runs",
+  "scenario": "fl-cart-api-500",
+  "noise_patch": "noise-css",
+  "rerun_failures": 0,
+  "failing_tests": [
+    {
+      "test": "tests.test_suites.test_cart::test_cart_persists_across_navigation[chromium]",
+      "kind": "failure",
+      "message": "AssertionError: assert 'Canvas Tote Bag' in []"
+    },
+    {
+      "test": "tests.test_suites.test_checkout::test_order_summary_totals_are_correct[chromium]",
+      "kind": "failure",
+      "message": "playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".cart_item_label\")"
+    }
+  ],
+  "source": "injected",
+  "run_url": "https://github.com/asifmahbubnaeem/tfa-failure-lab/actions/runs/46145463233",
+  "collected_at": "2026-11-28T12:49:26Z",
+  "labelled_by": "construction (fault switch or patch)"
+}

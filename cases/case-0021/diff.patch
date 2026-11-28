@@ -1,0 +1,13 @@
+diff --git a/shop/static/shop.css b/shop/static/shop.css
+index cbb149f..453f34d 100644
+--- a/shop/static/shop.css
++++ b/shop/static/shop.css
+@@ -1,7 +1,7 @@
+ * { box-sizing: border-box; }
+ body { margin: 0; font-family: system-ui, sans-serif; background: #f5f6f8; color: #1f2933; }
+ .topbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; background: #1f2933; color: #fff; }
+-.brand { font-weight: 700; font-size: 20px; }
++.brand { font-weight: 700; font-size: 20px; letter-spacing: 0.5px; }
+ .right { display: flex; gap: 12px; align-items: center; position: relative; }
+ .right a, .right button { color: #fff; background: none; border: 1px solid #52606d; border-radius: 6px; padding: 6px 12px; text-decoration: none; cursor: pointer; }
+ .shopping_cart_badge { background: #e0743d; border-radius: 10px; padding: 1px 7px; margin-left: 6px; font-size: 12px; }

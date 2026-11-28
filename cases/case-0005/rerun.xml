@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.942" timestamp="2026-11-28T12:36:03.822424+00:00" hostname="runnervm3lb7s"><testcase classname="tests.test_suites.test_cart" name="test_remove_item_updates_cart[chromium]" time="0.859"><failure message="AssertionError: assert 'Canvas Tote Bag' not in ['Canvas Tote Bag', 'Desk Lamp']">page = &lt;Page url='http://127.0.0.1:8000/cart.html'&gt;
+
+    def test_remove_item_updates_cart(page: Page):
+        inventory_page = _login_and_go_to_inventory(page)
+        names = inventory_page.get_product_names()[:2]
+        for name in names:
+            inventory_page.add_to_cart(name)
+        inventory_page.open_cart()
+        cart_page = CartPage(page)
+        cart_page.remove_item(names[0])
+        remaining = cart_page.get_cart_items()
+&gt;       assert names[0] not in remaining
+E       AssertionError: assert 'Canvas Tote Bag' not in ['Canvas Tote Bag', 'Desk Lamp']
+
+tests/test_suites/test_cart.py:45: AssertionError</failure></testcase></testsuite></testsuites>

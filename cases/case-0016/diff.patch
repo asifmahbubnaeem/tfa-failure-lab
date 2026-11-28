@@ -1,0 +1,23 @@
+diff --git a/docker-compose.yml b/docker-compose.yml
+index e8a2ef7..4bd2634 100644
+--- a/docker-compose.yml
++++ b/docker-compose.yml
+@@ -1,4 +1,4 @@
+-# Local Postgres for Lab Shop:  docker compose up -d
++# Local Postgres for Lab Shop. Start it with:  docker compose up -d
+ services:
+   postgres:
+     image: postgres:17-alpine
+diff --git a/suite/tests/fixtures/users.json b/suite/tests/fixtures/users.json
+index 676b18d..8f13d11 100644
+--- a/suite/tests/fixtures/users.json
++++ b/suite/tests/fixtures/users.json
+@@ -1,7 +1,7 @@
+ {
+   "standard_user": {
+     "username": "standard_user",
+-    "password": "lab_password",
++    "password": "lab_pasword",
+     "description": "Standard user with normal behaviour"
+   },
+   "locked_out_user": {

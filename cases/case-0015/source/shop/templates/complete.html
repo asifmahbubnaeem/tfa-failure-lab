@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2 class="complete-header" data-test="complete-header">Thank you for your order!</h2>
+  <div class="complete-text" data-test="complete-text">Order #{{ order_id }} is confirmed and on its way.</div>
+  <button id="back-to-products" data-test="back-to-products" onclick="location.href='/inventory.html'">Back to products</button>
+</div>
+{% endblock %}

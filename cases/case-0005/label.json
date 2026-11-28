@@ -1,0 +1,19 @@
+{
+  "case_id": "case-0005",
+  "category": "product_bug",
+  "root_cause": "remove_from_cart looks the product up by name instead of slug, so the DELETE matches nothing",
+  "scenario": "pb-cart-remove",
+  "noise_patch": "noise-css",
+  "rerun_failures": 1,
+  "failing_tests": [
+    {
+      "test": "tests.test_suites.test_cart::test_remove_item_updates_cart[chromium]",
+      "kind": "failure",
+      "message": "AssertionError: assert 'Canvas Tote Bag' not in ['Canvas Tote Bag', 'Desk Lamp']"
+    }
+  ],
+  "source": "injected",
+  "run_url": "https://github.com/asifmahbubnaeem/tfa-failure-lab/actions/runs/46145383230",
+  "collected_at": "2026-11-28T12:38:13Z",
+  "labelled_by": "construction (fault switch or patch)"
+}

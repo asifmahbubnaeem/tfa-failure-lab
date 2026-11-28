@@ -1,0 +1,50 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-9.2.0, pluggy-1.7.0
+rootdir: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.16.0, xdist-3.8.0, allure-pytest-2.16.2, html-4.2.0, Faker-40.63.0, playwright-0.10.0, metadata-3.1.1
+collected 21 items
+
+tests/test_suites/test_auth.py ........                                  [ 38%]
+tests/test_suites/test_cart.py ....                                      [ 57%]
+tests/test_suites/test_catalog.py .....                                  [ 80%]
+tests/test_suites/test_checkout.py ...
+[screenshot] Failure screenshot saved: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/screenshots/test_confirmation_screen_content[chromium].png
+
+F                                  [100%]
+
+=================================== FAILURES ===================================
+__________________ test_confirmation_screen_content[chromium] __________________
+
+page = <Page url='http://127.0.0.1:8000/checkout-complete.html'>
+
+    def test_confirmation_screen_content(page: Page):
+        _start_checkout(page)
+        step_one = CheckoutStepOnePage(page)
+        checkout_user = random_checkout_user()
+        step_one.fill_checkout_form(
+            checkout_user.first_name, checkout_user.last_name, checkout_user.postal_code
+        )
+        step_one.continue_to_step_two()
+        step_two = CheckoutStepTwoPage(page)
+        step_two.finish_order()
+        complete = CheckoutCompletePage(page)
+>       assert "ORDER PLACED" in complete.get_confirmation_header_text().upper()
+E       AssertionError: assert 'ORDER PLACED' in 'THANK YOU FOR YOUR ORDER!'
+E        +  where 'THANK YOU FOR YOUR ORDER!' = <built-in method upper of str object at 0x770ae59ae060>()
+E        +    where <built-in method upper of str object at 0x770ae59ae060> = 'Thank you for your order!'.upper
+E        +      where 'Thank you for your order!' = get_confirmation_header_text()
+E        +        where get_confirmation_header_text = <tests.pages.checkout_complete_page.CheckoutCompletePage object at 0x770ae530f920>.get_confirmation_header_text
+
+tests/test_suites/test_checkout.py:86: AssertionError
+- generated xml file: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/junit.xml -
+- Generated html report: file:///home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/html/report.html -
+=========================== short test summary info ============================
+FAILED tests/test_suites/test_checkout.py::test_confirmation_screen_content[chromium] - AssertionError: assert 'ORDER PLACED' in 'THANK YOU FOR YOUR ORDER!'
+ +  where 'THANK YOU FOR YOUR ORDER!' = <built-in method upper of str object at 0x770ae59ae060>()
+ +    where <built-in method upper of str object at 0x770ae59ae060> = 'Thank you for your order!'.upper
+ +      where 'Thank you for your order!' = get_confirmation_header_text()
+ +        where get_confirmation_header_text = <tests.pages.checkout_complete_page.CheckoutCompletePage object at 0x770ae530f920>.get_confirmation_header_text
+========================= 1 failed, 20 passed in 9.34s =========================
+##[error]Process completed with exit code 1.

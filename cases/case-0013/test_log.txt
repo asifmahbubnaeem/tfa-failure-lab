@@ -1,0 +1,46 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-9.2.0, pluggy-1.7.0
+rootdir: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite
+configfile: pyproject.toml
+testpaths: tests
+plugins: metadata-3.1.1, Faker-40.63.0, allure-pytest-2.16.2, anyio-4.16.0, html-4.2.0, playwright-0.10.0, xdist-3.8.0
+collected 21 items
+
+tests/test_suites/test_auth.py ........                                  [ 38%]
+tests/test_suites/test_cart.py ....                                      [ 57%]
+tests/test_suites/test_catalog.py ..
+[screenshot] Failure screenshot saved: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/screenshots/test_sort_by_name_za[chromium].png
+
+F..                                  [ 80%]
+tests/test_suites/test_checkout.py ....                                  [100%]
+
+=================================== FAILURES ===================================
+________________________ test_sort_by_name_za[chromium] ________________________
+
+page = <Page url='http://127.0.0.1:8000/inventory.html'>
+
+    def test_sort_by_name_za(page: Page):
+        inventory_page = _login_as(page, "standard_user")
+        inventory_page.sort_by("za")
+        names = inventory_page.get_product_names()
+>       assert_sorted(names)
+
+tests/test_suites/test_catalog.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+values = ['Wireless Mouse', 'Trail Water Bottle', 'Notebook Set', 'Mechanical Keyboard', 'Desk Lamp', 'Canvas Tote Bag']
+reverse = False
+
+    def assert_sorted(values: List, reverse: bool = False) -> None:
+        expected = sorted(values, reverse=reverse)
+>       assert values == expected, f"Expected sorted={expected}, got={values}"
+               ^^^^^^^^^^^^^^^^^^
+E       AssertionError: Expected sorted=['Canvas Tote Bag', 'Desk Lamp', 'Mechanical Keyboard', 'Notebook Set', 'Trail Water Bottle', 'Wireless Mouse'], got=['Wireless Mouse', 'Trail Water Bottle', 'Notebook Set', 'Mechanical Keyboard', 'Desk Lamp', 'Canvas Tote Bag']
+
+tests/utils/assertions.py:7: AssertionError
+- generated xml file: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/junit.xml -
+- Generated html report: file:///home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/html/report.html -
+=========================== short test summary info ============================
+FAILED tests/test_suites/test_catalog.py::test_sort_by_name_za[chromium] - AssertionError: Expected sorted=['Canvas Tote Bag', 'Desk Lamp', 'Mechanical Keyboard', 'Notebook Set', 'Trail Water Bottle', 'Wireless Mouse'], got=['Wireless Mouse', 'Trail Water Bottle', 'Notebook Set', 'Mechanical Keyboard', 'Desk Lamp', 'Canvas Tote Bag']
+========================= 1 failed, 20 passed in 9.43s =========================
+##[error]Process completed with exit code 1.

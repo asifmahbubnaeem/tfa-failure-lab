@@ -1,0 +1,11 @@
+diff --git a/suite/tests/utils/waits.py b/suite/tests/utils/waits.py
+index 2df5dc5..910d4db 100644
+--- a/suite/tests/utils/waits.py
++++ b/suite/tests/utils/waits.py
+@@ -2,5 +2,6 @@ from playwright.sync_api import Page
+ 
+ 
+ def wait_for_network_idle(page: Page, timeout: int = 10000) -> None:
++    """Wait until the page has had no network activity for 500 ms."""
+     page.wait_for_load_state("networkidle", timeout=timeout)
+ 

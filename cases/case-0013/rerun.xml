@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="0.591" timestamp="2026-11-28T12:37:19.551473+00:00" hostname="ip-10-0-143-122"><testcase classname="tests.test_suites.test_catalog" name="test_sort_by_name_za[chromium]" time="0.519"><failure message="AssertionError: Expected sorted=['Canvas Tote Bag', 'Desk Lamp', 'Mechanical Keyboard', 'Notebook Set', 'Trail Water Bottle', 'Wireless Mouse'], got=['Wireless Mouse', 'Trail Water Bottle', 'Notebook Set', 'Mechanical Keyboard', 'Desk Lamp', 'Canvas Tote Bag']">page = &lt;Page url='http://127.0.0.1:8000/inventory.html'&gt;
+
+    def test_sort_by_name_za(page: Page):
+        inventory_page = _login_as(page, "standard_user")
+        inventory_page.sort_by("za")
+        names = inventory_page.get_product_names()
+&gt;       assert_sorted(names)
+
+tests/test_suites/test_catalog.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+values = ['Wireless Mouse', 'Trail Water Bottle', 'Notebook Set', 'Mechanical Keyboard', 'Desk Lamp', 'Canvas Tote Bag']
+reverse = False
+
+    def assert_sorted(values: List, reverse: bool = False) -&gt; None:
+        expected = sorted(values, reverse=reverse)
+&gt;       assert values == expected, f"Expected sorted={expected}, got={values}"
+               ^^^^^^^^^^^^^^^^^^
+E       AssertionError: Expected sorted=['Canvas Tote Bag', 'Desk Lamp', 'Mechanical Keyboard', 'Notebook Set', 'Trail Water Bottle', 'Wireless Mouse'], got=['Wireless Mouse', 'Trail Water Bottle', 'Notebook Set', 'Mechanical Keyboard', 'Desk Lamp', 'Canvas Tote Bag']
+
+tests/utils/assertions.py:7: AssertionError</failure></testcase></testsuite></testsuites>

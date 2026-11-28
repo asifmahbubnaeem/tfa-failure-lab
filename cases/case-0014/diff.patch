@@ -1,0 +1,25 @@
+diff --git a/shop/templates/base.html b/shop/templates/base.html
+index ba8c9f8..ea8de94 100644
+--- a/shop/templates/base.html
++++ b/shop/templates/base.html
+@@ -24,6 +24,7 @@
+     {% endblock %}
+   </header>
+   <main>{% block content %}{% endblock %}</main>
++  <footer class="site-footer">Lab Shop · prices include no shipping</footer>
+   {% block scripts %}{% endblock %}
+ </body>
+ </html>
+diff --git a/suite/tests/test_suites/test_catalog.py b/suite/tests/test_suites/test_catalog.py
+index 6556ff8..729bfdb 100644
+--- a/suite/tests/test_suites/test_catalog.py
++++ b/suite/tests/test_suites/test_catalog.py
+@@ -32,7 +32,7 @@ def test_sort_by_name_za(page: Page):
+     inventory_page = _login_as(page, "standard_user")
+     inventory_page.sort_by("za")
+     names = inventory_page.get_product_names()
+-    assert_sorted(names, reverse=True)
++    assert_sorted(names)
+ 
+ 
+ def test_sort_by_price_low_high(page: Page):

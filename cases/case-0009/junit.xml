@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="21" time="131.205" timestamp="2026-11-28T12:36:12.607698+00:00" hostname="runnervm3lb7s"><testcase classname="tests.test_suites.test_auth" name="test_login_success_standard_user[chromium]" time="1.833" /><testcase classname="tests.test_suites.test_auth" name="test_login_failure_invalid_credentials[chromium-scenario0]" time="0.325" /><testcase classname="tests.test_suites.test_auth" name="test_login_failure_invalid_credentials[chromium-scenario1]" time="0.283" /><testcase classname="tests.test_suites.test_auth" name="test_login_failure_invalid_credentials[chromium-scenario2]" time="0.322" /><testcase classname="tests.test_suites.test_auth" name="test_login_failure_invalid_credentials[chromium-scenario3]" time="0.290" /><testcase classname="tests.test_suites.test_auth" name="test_login_failure_invalid_credentials[chromium-scenario4]" time="0.307" /><testcase classname="tests.test_suites.test_auth" name="test_locked_out_user_behavior[chromium]" time="0.294" /><testcase classname="tests.test_suites.test_auth" name="test_logout_and_session_persistence[chromium]" time="0.464" /><testcase classname="tests.test_suites.test_cart" name="test_add_single_item_updates_cart_badge[chromium]" time="0.402" /><testcase classname="tests.test_suites.test_cart" name="test_add_multiple_items_appear_in_cart[chromium]" time="0.511" /><testcase classname="tests.test_suites.test_cart" name="test_remove_item_updates_cart[chromium]" time="0.597" /><testcase classname="tests.test_suites.test_cart" name="test_cart_persists_across_navigation[chromium]" time="0.613" /><testcase classname="tests.test_suites.test_catalog" name="test_product_listing_loads_correctly[chromium]" time="0.357" /><testcase classname="tests.test_suites.test_catalog" name="test_sort_by_name_az[chromium]" time="0.358" /><testcase classname="tests.test_suites.test_catalog" name="test_sort_by_name_za[chromium]" time="0.358" /><testcase classname="tests.test_suites.test_catalog" name="test_sort_by_price_low_high[chromium]" time="0.342" /><testcase classname="tests.test_suites.test_catalog" name="test_sort_by_price_high_low[chromium]" time="0.355" /><testcase classname="tests.test_suites.test_checkout" name="test_complete_purchase_with_valid_details[chromium]" time="30.490"><failure message="playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.&#10;Call log:&#10;  - waiting for locator(&quot;[data-test='checkout-button']&quot;)">page = &lt;Page url='http://127.0.0.1:8000/cart.html'&gt;
+
+    def test_complete_purchase_with_valid_details(page: Page):
+&gt;       _start_checkout(page)
+
+tests/test_suites/test_checkout.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_suites/test_checkout.py:31: in _start_checkout
+    cart_page.proceed_to_checkout()
+tests/pages/cart_page.py:25: in proceed_to_checkout
+    self.click_and_wait(self.CHECKOUT_BUTTON)
+tests/pages/base_page.py:38: in click_and_wait
+    self.page.click(selector)
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/sync_api/_generated.py:16300: in click
+    self._sync(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/page.py:1125: in click
+    return await self._main_frame.click(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/frame.py:587: in click
+    return await self._channel.click(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:387: in finish
+    raise e from None
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:352: in finish
+    result = await zone.run_async(lambda: awaitable)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;playwright._impl.utils.zones.Zone object at 0x7808693c92e0&gt;
+func = &lt;function ChannelOwner._wrap_api_call.&lt;locals&gt;.finish.&lt;locals&gt;.&lt;lambda&gt; at 0x7808696b9260&gt;
+
+    async def run_async(self, func: Callable[[], Awaitable[R]]) -&gt; R:
+        # Python: run() of an async function. The coroutine runs when it is awaited,
+        # so the zone must be current while it is awaited, not while it is created.
+        token = _async_local_storage.set(self)
+        try:
+&gt;           return await func()
+                   ^^^^^^^^^^^^
+E           playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator("[data-test='checkout-button']")
+
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/utils/zones.py:58: TimeoutError</failure></testcase><testcase classname="tests.test_suites.test_checkout" name="test_checkout_blocked_when_required_fields_missing[chromium]" time="30.499"><failure message="playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.&#10;Call log:&#10;  - waiting for locator(&quot;[data-test='checkout-button']&quot;)">page = &lt;Page url='http://127.0.0.1:8000/cart.html'&gt;
+
+    def test_checkout_blocked_when_required_fields_missing(page: Page):
+&gt;       _start_checkout(page)
+
+tests/test_suites/test_checkout.py:49: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_suites/test_checkout.py:31: in _start_checkout
+    cart_page.proceed_to_checkout()
+tests/pages/cart_page.py:25: in proceed_to_checkout
+    self.click_and_wait(self.CHECKOUT_BUTTON)
+tests/pages/base_page.py:38: in click_and_wait
+    self.page.click(selector)
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/sync_api/_generated.py:16300: in click
+    self._sync(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/page.py:1125: in click
+    return await self._main_frame.click(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/frame.py:587: in click
+    return await self._channel.click(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:387: in finish
+    raise e from None
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:352: in finish
+    result = await zone.run_async(lambda: awaitable)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;playwright._impl.utils.zones.Zone object at 0x7808693e5e80&gt;
+func = &lt;function ChannelOwner._wrap_api_call.&lt;locals&gt;.finish.&lt;locals&gt;.&lt;lambda&gt; at 0x780869761a80&gt;
+
+    async def run_async(self, func: Callable[[], Awaitable[R]]) -&gt; R:
+        # Python: run() of an async function. The coroutine runs when it is awaited,
+        # so the zone must be current while it is awaited, not while it is created.
+        token = _async_local_storage.set(self)
+        try:
+&gt;           return await func()
+                   ^^^^^^^^^^^^
+E           playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator("[data-test='checkout-button']")
+
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/utils/zones.py:58: TimeoutError</failure></testcase><testcase classname="tests.test_suites.test_checkout" name="test_order_summary_totals_are_correct[chromium]" time="30.486"><failure message="playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.&#10;Call log:&#10;  - waiting for locator(&quot;[data-test='checkout-button']&quot;)">page = &lt;Page url='http://127.0.0.1:8000/cart.html'&gt;
+
+    def test_order_summary_totals_are_correct(page: Page):
+&gt;       _start_checkout(page)
+
+tests/test_suites/test_checkout.py:58: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_suites/test_checkout.py:31: in _start_checkout
+    cart_page.proceed_to_checkout()
+tests/pages/cart_page.py:25: in proceed_to_checkout
+    self.click_and_wait(self.CHECKOUT_BUTTON)
+tests/pages/base_page.py:38: in click_and_wait
+    self.page.click(selector)
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/sync_api/_generated.py:16300: in click
+    self._sync(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/page.py:1125: in click
+    return await self._main_frame.click(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/frame.py:587: in click
+    return await self._channel.click(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:387: in finish
+    raise e from None
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:352: in finish
+    result = await zone.run_async(lambda: awaitable)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;playwright._impl.utils.zones.Zone object at 0x7808693ee630&gt;
+func = &lt;function ChannelOwner._wrap_api_call.&lt;locals&gt;.finish.&lt;locals&gt;.&lt;lambda&gt; at 0x780869a8fb00&gt;
+
+    async def run_async(self, func: Callable[[], Awaitable[R]]) -&gt; R:
+        # Python: run() of an async function. The coroutine runs when it is awaited,
+        # so the zone must be current while it is awaited, not while it is created.
+        token = _async_local_storage.set(self)
+        try:
+&gt;           return await func()
+                   ^^^^^^^^^^^^
+E           playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator("[data-test='checkout-button']")
+
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/utils/zones.py:58: TimeoutError</failure></testcase><testcase classname="tests.test_suites.test_checkout" name="test_confirmation_screen_content[chromium]" time="30.669"><failure message="playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.&#10;Call log:&#10;  - waiting for locator(&quot;[data-test='checkout-button']&quot;)">page = &lt;Page url='http://127.0.0.1:8000/cart.html'&gt;
+
+    def test_confirmation_screen_content(page: Page):
+&gt;       _start_checkout(page)
+
+tests/test_suites/test_checkout.py:76: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_suites/test_checkout.py:31: in _start_checkout
+    cart_page.proceed_to_checkout()
+tests/pages/cart_page.py:25: in proceed_to_checkout
+    self.click_and_wait(self.CHECKOUT_BUTTON)
+tests/pages/base_page.py:38: in click_and_wait
+    self.page.click(selector)
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/sync_api/_generated.py:16300: in click
+    self._sync(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/page.py:1125: in click
+    return await self._main_frame.click(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/frame.py:587: in click
+    return await self._channel.click(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:387: in finish
+    raise e from None
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:352: in finish
+    result = await zone.run_async(lambda: awaitable)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;playwright._impl.utils.zones.Zone object at 0x7808693f1490&gt;
+func = &lt;function ChannelOwner._wrap_api_call.&lt;locals&gt;.finish.&lt;locals&gt;.&lt;lambda&gt; at 0x78086993b240&gt;
+
+    async def run_async(self, func: Callable[[], Awaitable[R]]) -&gt; R:
+        # Python: run() of an async function. The coroutine runs when it is awaited,
+        # so the zone must be current while it is awaited, not while it is created.
+        token = _async_local_storage.set(self)
+        try:
+&gt;           return await func()
+                   ^^^^^^^^^^^^
+E           playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator("[data-test='checkout-button']")
+
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/utils/zones.py:58: TimeoutError</failure></testcase></testsuite></testsuites>

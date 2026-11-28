@@ -1,0 +1,26 @@
+diff --git a/shop/static/shop.js b/shop/static/shop.js
+index ff47b42..5c6db8c 100644
+--- a/shop/static/shop.js
++++ b/shop/static/shop.js
+@@ -52,7 +52,8 @@ function removeFromCartPage(button) {
+ function sortItems(mode) {
+   const list = document.querySelector(".inventory_list");
+   const items = Array.from(list.querySelectorAll(".inventory_item"));
+-  const priceKey = (el) => parseFloat(el.dataset.price);
++  // Read the price as shown, so the sort matches what the customer sees.
++  const priceKey = (el) => el.querySelector(".inventory_item_price").textContent.trim();
+   const cmp = {
+     az: (a, b) => a.dataset.name.localeCompare(b.dataset.name),
+     za: (a, b) => b.dataset.name.localeCompare(a.dataset.name),
+diff --git a/shop/templates/base.html b/shop/templates/base.html
+index ba8c9f8..ea8de94 100644
+--- a/shop/templates/base.html
++++ b/shop/templates/base.html
+@@ -24,6 +24,7 @@
+     {% endblock %}
+   </header>
+   <main>{% block content %}{% endblock %}</main>
++  <footer class="site-footer">Lab Shop · prices include no shipping</footer>
+   {% block scripts %}{% endblock %}
+ </body>
+ </html>

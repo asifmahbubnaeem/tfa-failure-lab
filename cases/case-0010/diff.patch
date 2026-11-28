@@ -1,0 +1,25 @@
+diff --git a/shop/templates/base.html b/shop/templates/base.html
+index ba8c9f8..ea8de94 100644
+--- a/shop/templates/base.html
++++ b/shop/templates/base.html
+@@ -24,6 +24,7 @@
+     {% endblock %}
+   </header>
+   <main>{% block content %}{% endblock %}</main>
++  <footer class="site-footer">Lab Shop · prices include no shipping</footer>
+   {% block scripts %}{% endblock %}
+ </body>
+ </html>
+diff --git a/suite/tests/pages/cart_page.py b/suite/tests/pages/cart_page.py
+index e8f0949..569038e 100644
+--- a/suite/tests/pages/cart_page.py
++++ b/suite/tests/pages/cart_page.py
+@@ -9,7 +9,7 @@ class CartPage(BasePage):
+     CART_ITEM = ".cart_item"
+     CART_ITEM_NAME = ".inventory_item_name"
+     REMOVE_BUTTON = "button[data-test^='remove-']"
+-    CHECKOUT_BUTTON = "[data-test='checkout']"
++    CHECKOUT_BUTTON = "[data-test='checkout-button']"
+ 
+     def __init__(self, page: Page) -> None:
+         super().__init__(page)

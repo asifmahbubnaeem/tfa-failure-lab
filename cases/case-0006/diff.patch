@@ -1,0 +1,25 @@
+diff --git a/shop/db.py b/shop/db.py
+index b171d8e..d371933 100644
+--- a/shop/db.py
++++ b/shop/db.py
+@@ -85,7 +85,7 @@ def remove_from_cart(cart_id: str, slug: str) -> None:
+     with connect() as conn:
+         conn.execute(
+             "DELETE FROM cart_items WHERE cart_id = %s "
+-            "AND product_id = (SELECT id FROM products WHERE slug = %s)",
++            "AND product_id = (SELECT id FROM products WHERE name = %s)",
+             (cart_id, slug),
+         )
+ 
+diff --git a/shop/templates/base.html b/shop/templates/base.html
+index ba8c9f8..ea8de94 100644
+--- a/shop/templates/base.html
++++ b/shop/templates/base.html
+@@ -24,6 +24,7 @@
+     {% endblock %}
+   </header>
+   <main>{% block content %}{% endblock %}</main>
++  <footer class="site-footer">Lab Shop · prices include no shipping</footer>
+   {% block scripts %}{% endblock %}
+ </body>
+ </html>

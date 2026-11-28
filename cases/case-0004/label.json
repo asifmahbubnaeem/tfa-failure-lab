@@ -1,0 +1,19 @@
+{
+  "case_id": "case-0004",
+  "category": "product_bug",
+  "root_cause": "totals() rounds tax down but rounds the total separately, so item total + tax != total",
+  "scenario": "pb-tax-rounding",
+  "noise_patch": "noise-compose",
+  "rerun_failures": 1,
+  "failing_tests": [
+    {
+      "test": "tests.test_suites.test_checkout::test_order_summary_totals_are_correct[chromium]",
+      "kind": "failure",
+      "message": "AssertionError: Total mismatch. Item(50.49) + Tax(4.03) != Total(54.53)"
+    }
+  ],
+  "source": "injected",
+  "run_url": "https://github.com/asifmahbubnaeem/tfa-failure-lab/actions/runs/46149197236",
+  "collected_at": "2026-11-28T13:22:49Z",
+  "labelled_by": "construction (fault switch or patch)"
+}

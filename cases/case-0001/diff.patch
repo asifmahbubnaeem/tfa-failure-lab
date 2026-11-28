@@ -1,0 +1,27 @@
+diff --git a/shop/static/shop.css b/shop/static/shop.css
+index cbb149f..453f34d 100644
+--- a/shop/static/shop.css
++++ b/shop/static/shop.css
+@@ -1,7 +1,7 @@
+ * { box-sizing: border-box; }
+ body { margin: 0; font-family: system-ui, sans-serif; background: #f5f6f8; color: #1f2933; }
+ .topbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; background: #1f2933; color: #fff; }
+-.brand { font-weight: 700; font-size: 20px; }
++.brand { font-weight: 700; font-size: 20px; letter-spacing: 0.5px; }
+ .right { display: flex; gap: 12px; align-items: center; position: relative; }
+ .right a, .right button { color: #fff; background: none; border: 1px solid #52606d; border-radius: 6px; padding: 6px 12px; text-decoration: none; cursor: pointer; }
+ .shopping_cart_badge { background: #e0743d; border-radius: 10px; padding: 1px 7px; margin-left: 6px; font-size: 12px; }
+diff --git a/shop/static/shop.js b/shop/static/shop.js
+index ff47b42..5c6db8c 100644
+--- a/shop/static/shop.js
++++ b/shop/static/shop.js
+@@ -52,7 +52,8 @@ function removeFromCartPage(button) {
+ function sortItems(mode) {
+   const list = document.querySelector(".inventory_list");
+   const items = Array.from(list.querySelectorAll(".inventory_item"));
+-  const priceKey = (el) => parseFloat(el.dataset.price);
++  // Read the price as shown, so the sort matches what the customer sees.
++  const priceKey = (el) => el.querySelector(".inventory_item_price").textContent.trim();
+   const cmp = {
+     az: (a, b) => a.dataset.name.localeCompare(b.dataset.name),
+     za: (a, b) => b.dataset.name.localeCompare(a.dataset.name),

@@ -1,0 +1,96 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-9.2.0, pluggy-1.7.0
+rootdir: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite
+configfile: pyproject.toml
+testpaths: tests
+plugins: metadata-3.1.1, Faker-40.63.0, allure-pytest-2.16.2, anyio-4.16.0, html-4.2.0, playwright-0.10.0, xdist-3.8.0
+collected 21 items
+
+tests/test_suites/test_auth.py ........                                  [ 38%]
+tests/test_suites/test_cart.py ...
+[screenshot] Failure screenshot saved: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/screenshots/test_cart_persists_across_navigation[chromium].png
+
+F                                      [ 57%]
+tests/test_suites/test_catalog.py .....                                  [ 80%]
+tests/test_suites/test_checkout.py ..
+[screenshot] Failure screenshot saved: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/screenshots/test_order_summary_totals_are_correct[chromium].png
+
+F.                                  [100%]
+
+=================================== FAILURES ===================================
+________________ test_cart_persists_across_navigation[chromium] ________________
+
+page = <Page url='http://127.0.0.1:8000/cart.html'>
+
+    def test_cart_persists_across_navigation(page: Page):
+        inventory_page = _login_and_go_to_inventory(page)
+        name = inventory_page.get_product_names()[0]
+        inventory_page.add_to_cart(name)
+        inventory_page.open_cart()
+        page.click("#continue-shopping")
+        inventory_page.open_cart()
+        cart_page = CartPage(page)
+        items = cart_page.get_cart_items()
+>       assert name in items
+E       AssertionError: assert 'Canvas Tote Bag' in []
+
+tests/test_suites/test_cart.py:57: AssertionError
+_______________ test_order_summary_totals_are_correct[chromium] ________________
+
+page = <Page url='http://127.0.0.1:8000/checkout-step-two.html'>
+
+    def test_order_summary_totals_are_correct(page: Page):
+        _start_checkout(page)
+        step_one = CheckoutStepOnePage(page)
+        checkout_user = random_checkout_user()
+        step_one.fill_checkout_form(
+            checkout_user.first_name, checkout_user.last_name, checkout_user.postal_code
+        )
+        step_one.continue_to_step_two()
+        step_two = CheckoutStepTwoPage(page)
+        item_total = step_two.get_item_total()
+        tax = step_two.get_tax()
+        total = step_two.get_total()
+        # Reconstruct item prices from cart page
+>       page.click(".cart_item_label")  # navigate not necessary; we reuse totals directly
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_suites/test_checkout.py:70: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/sync_api/_generated.py:16300: in click
+    self._sync(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/page.py:1125: in click
+    return await self._main_frame.click(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/frame.py:587: in click
+    return await self._channel.click(
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:387: in finish
+    raise e from None
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/channel_owner.py:352: in finish
+    result = await zone.run_async(lambda: awaitable)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <playwright._impl.utils.zones.Zone object at 0x766463091df0>
+func = <function ChannelOwner._wrap_api_call.<locals>.finish.<locals>.<lambda> at 0x766462131ee0>
+
+    async def run_async(self, func: Callable[[], Awaitable[R]]) -> R:
+        # Python: run() of an async function. The coroutine runs when it is awaited,
+        # so the zone must be current while it is awaited, not while it is created.
+        token = _async_local_storage.set(self)
+        try:
+>           return await func()
+                   ^^^^^^^^^^^^
+E           playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator(".cart_item_label")
+
+/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/site-packages/playwright/_impl/utils/zones.py:58: TimeoutError
+- generated xml file: /home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/junit.xml -
+- Generated html report: file:///home/runner/work/tfa-failure-lab/tfa-failure-lab/suite/reports/html/report.html -
+=========================== short test summary info ============================
+FAILED tests/test_suites/test_cart.py::test_cart_persists_across_navigation[chromium] - AssertionError: assert 'Canvas Tote Bag' in []
+FAILED tests/test_suites/test_checkout.py::test_order_summary_totals_are_correct[chromium] - playwright._impl._errors.TimeoutError: Page.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator(".cart_item_label")
+======================== 2 failed, 19 passed in 39.63s =========================
+##[error]Process completed with exit code 1.

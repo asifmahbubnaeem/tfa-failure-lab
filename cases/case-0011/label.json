@@ -1,0 +1,19 @@
+{
+  "case_id": "case-0011",
+  "category": "test_bug",
+  "root_cause": "Test expects 'ORDER PLACED' but the page correctly says 'Thank you for your order!'",
+  "scenario": "tb-confirmation-text",
+  "noise_patch": "noise-test-helper",
+  "rerun_failures": 1,
+  "failing_tests": [
+    {
+      "test": "tests.test_suites.test_checkout::test_confirmation_screen_content[chromium]",
+      "kind": "failure",
+      "message": "AssertionError: assert 'ORDER PLACED' in 'THANK YOU FOR YOUR ORDER!'\n +  where 'THANK YOU FOR YOUR ORDER!' = <built-in method upper of str object at 0x74fa2bc83190>()\n +    where <built-in method upper of str object at 0x74fa2bc83190> = 'Thank you for your order!'.upper\n +      where 'Thank you for "
+    }
+  ],
+  "source": "injected",
+  "run_url": "https://github.com/asifmahbubnaeem/tfa-failure-lab/actions/runs/46145422605",
+  "collected_at": "2026-11-28T12:41:36Z",
+  "labelled_by": "construction (fault switch or patch)"
+}

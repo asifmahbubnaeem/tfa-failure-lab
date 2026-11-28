@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block nav %}{% endblock %}
+{% block content %}
+<form class="card login" method="post" action="/">
+  <h1>Sign in</h1>
+  <input id="user-name" data-test="username" name="username" placeholder="Username" value="{{ username or '' }}" autocomplete="off">
+  <input id="password" data-test="password" name="password" type="password" placeholder="Password">
+  {% if error %}<div class="error" data-test="error">{{ error }}</div>{% endif %}
+  <input id="login-button" data-test="login-button" type="submit" value="Login">
+  <p class="hint">Lab accounts: standard_user, locked_out_user (password: lab_password)</p>
+</form>
+{% endblock %}

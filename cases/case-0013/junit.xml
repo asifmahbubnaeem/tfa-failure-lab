@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="21" time="9.437" timestamp="2026-11-28T12:37:09.579832+00:00" hostname="ip-10-0-143-122"><testcase classname="tests.test_suites.test_auth" name="test_login_success_standard_user[chromium]" time="2.559" /><testcase classname="tests.test_suites.test_auth" name="test_login_failure_invalid_credentials[chromium-scenario0]" time="0.213" /><testcase classname="tests.test_suites.test_auth" name="test_login_failure_invalid_credentials[chromium-scenario1]" time="0.212" /><testcase classname="tests.test_suites.test_auth" name="test_login_failure_invalid_credentials[chromium-scenario2]" time="0.195" /><testcase classname="tests.test_suites.test_auth" name="test_login_failure_invalid_credentials[chromium-scenario3]" time="0.200" /><testcase classname="tests.test_suites.test_auth" name="test_login_failure_invalid_credentials[chromium-scenario4]" time="0.196" /><testcase classname="tests.test_suites.test_auth" name="test_locked_out_user_behavior[chromium]" time="0.201" /><testcase classname="tests.test_suites.test_auth" name="test_logout_and_session_persistence[chromium]" time="0.353" /><testcase classname="tests.test_suites.test_cart" name="test_add_single_item_updates_cart_badge[chromium]" time="0.281" /><testcase classname="tests.test_suites.test_cart" name="test_add_multiple_items_appear_in_cart[chromium]" time="0.389" /><testcase classname="tests.test_suites.test_cart" name="test_remove_item_updates_cart[chromium]" time="0.429" /><testcase classname="tests.test_suites.test_cart" name="test_cart_persists_across_navigation[chromium]" time="0.449" /><testcase classname="tests.test_suites.test_catalog" name="test_product_listing_loads_correctly[chromium]" time="0.233" /><testcase classname="tests.test_suites.test_catalog" name="test_sort_by_name_az[chromium]" time="0.253" /><testcase classname="tests.test_suites.test_catalog" name="test_sort_by_name_za[chromium]" time="0.243"><failure message="AssertionError: Expected sorted=['Canvas Tote Bag', 'Desk Lamp', 'Mechanical Keyboard', 'Notebook Set', 'Trail Water Bottle', 'Wireless Mouse'], got=['Wireless Mouse', 'Trail Water Bottle', 'Notebook Set', 'Mechanical Keyboard', 'Desk Lamp', 'Canvas Tote Bag']">page = &lt;Page url='http://127.0.0.1:8000/inventory.html'&gt;
+
+    def test_sort_by_name_za(page: Page):
+        inventory_page = _login_as(page, "standard_user")
+        inventory_page.sort_by("za")
+        names = inventory_page.get_product_names()
+&gt;       assert_sorted(names)
+
+tests/test_suites/test_catalog.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+values = ['Wireless Mouse', 'Trail Water Bottle', 'Notebook Set', 'Mechanical Keyboard', 'Desk Lamp', 'Canvas Tote Bag']
+reverse = False
+
+    def assert_sorted(values: List, reverse: bool = False) -&gt; None:
+        expected = sorted(values, reverse=reverse)
+&gt;       assert values == expected, f"Expected sorted={expected}, got={values}"
+               ^^^^^^^^^^^^^^^^^^
+E       AssertionError: Expected sorted=['Canvas Tote Bag', 'Desk Lamp', 'Mechanical Keyboard', 'Notebook Set', 'Trail Water Bottle', 'Wireless Mouse'], got=['Wireless Mouse', 'Trail Water Bottle', 'Notebook Set', 'Mechanical Keyboard', 'Desk Lamp', 'Canvas Tote Bag']
+
+tests/utils/assertions.py:7: AssertionError</failure></testcase><testcase classname="tests.test_suites.test_catalog" name="test_sort_by_price_low_high[chromium]" time="0.240" /><testcase classname="tests.test_suites.test_catalog" name="test_sort_by_price_high_low[chromium]" time="0.235" /><testcase classname="tests.test_suites.test_checkout" name="test_complete_purchase_with_valid_details[chromium]" time="0.602" /><testcase classname="tests.test_suites.test_checkout" name="test_checkout_blocked_when_required_fields_missing[chromium]" time="0.530" /><testcase classname="tests.test_suites.test_checkout" name="test_order_summary_totals_are_correct[chromium]" time="0.549" /><testcase classname="tests.test_suites.test_checkout" name="test_confirmation_screen_content[chromium]" time="0.703" /></testsuite></testsuites>

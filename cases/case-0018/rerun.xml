@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="1.738" timestamp="2026-11-28T12:37:34.487943+00:00" hostname="runnervm3lb7s"><testcase classname="tests.test_suites.test_cart" name="test_remove_item_updates_cart[chromium]" time="0.945" /><testcase classname="tests.test_suites.test_cart" name="test_cart_persists_across_navigation[chromium]" time="0.675"><failure message="AssertionError: assert 'Canvas Tote Bag' in []">page = &lt;Page url='http://127.0.0.1:8000/cart.html'&gt;
+
+    def test_cart_persists_across_navigation(page: Page):
+        inventory_page = _login_and_go_to_inventory(page)
+        name = inventory_page.get_product_names()[0]
+        inventory_page.add_to_cart(name)
+        inventory_page.open_cart()
+        page.click("#continue-shopping")
+        inventory_page.open_cart()
+        cart_page = CartPage(page)
+        items = cart_page.get_cart_items()
+&gt;       assert name in items
+E       AssertionError: assert 'Canvas Tote Bag' in []
+
+tests/test_suites/test_cart.py:57: AssertionError</failure></testcase></testsuite></testsuites>

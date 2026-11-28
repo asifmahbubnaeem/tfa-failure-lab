@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="1.404" timestamp="2026-11-28T12:35:56.475751+00:00" hostname="runnervm3lb7s"><testcase classname="tests.test_suites.test_catalog" name="test_sort_by_price_low_high[chromium]" time="0.778"><failure message="AssertionError: Expected sorted=[9.99, 12.49, 15.99, 24.99, 34.5, 79.0], got=[12.49, 15.99, 24.99, 34.5, 79.0, 9.99]">page = &lt;Page url='http://127.0.0.1:8000/inventory.html'&gt;
+
+    def test_sort_by_price_low_high(page: Page):
+        inventory_page = _login_as(page, "standard_user")
+        inventory_page.sort_by("lohi")
+        prices = inventory_page.get_product_prices()
+&gt;       assert_sorted(prices)
+
+tests/test_suites/test_catalog.py:42: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+values = [12.49, 15.99, 24.99, 34.5, 79.0, 9.99], reverse = False
+
+    def assert_sorted(values: List, reverse: bool = False) -&gt; None:
+        expected = sorted(values, reverse=reverse)
+&gt;       assert values == expected, f"Expected sorted={expected}, got={values}"
+               ^^^^^^^^^^^^^^^^^^
+E       AssertionError: Expected sorted=[9.99, 12.49, 15.99, 24.99, 34.5, 79.0], got=[12.49, 15.99, 24.99, 34.5, 79.0, 9.99]
+
+tests/utils/assertions.py:7: AssertionError</failure></testcase><testcase classname="tests.test_suites.test_catalog" name="test_sort_by_price_high_low[chromium]" time="0.405"><failure message="AssertionError: Expected sorted=[79.0, 34.5, 24.99, 15.99, 12.49, 9.99], got=[9.99, 79.0, 34.5, 24.99, 15.99, 12.49]">page = &lt;Page url='http://127.0.0.1:8000/inventory.html'&gt;
+
+    def test_sort_by_price_high_low(page: Page):
+        inventory_page = _login_as(page, "standard_user")
+        inventory_page.sort_by("hilo")
+        prices = inventory_page.get_product_prices()
+&gt;       assert_sorted(prices, reverse=True)
+
+tests/test_suites/test_catalog.py:49: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+values = [9.99, 79.0, 34.5, 24.99, 15.99, 12.49], reverse = True
+
+    def assert_sorted(values: List, reverse: bool = False) -&gt; None:
+        expected = sorted(values, reverse=reverse)
+&gt;       assert values == expected, f"Expected sorted={expected}, got={values}"
+               ^^^^^^^^^^^^^^^^^^
+E       AssertionError: Expected sorted=[79.0, 34.5, 24.99, 15.99, 12.49, 9.99], got=[9.99, 79.0, 34.5, 24.99, 15.99, 12.49]
+
+tests/utils/assertions.py:7: AssertionError</failure></testcase></testsuite></testsuites>

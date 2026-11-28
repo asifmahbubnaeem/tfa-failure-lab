@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="1.230" timestamp="2026-11-28T13:22:29.618753+00:00" hostname="runnervm3lb7s"><testcase classname="tests.test_suites.test_checkout" name="test_confirmation_screen_content[chromium]" time="1.110"><failure message="AssertionError: assert 'ORDER PLACED' in 'THANK YOU FOR YOUR ORDER!'&#10; +  where 'THANK YOU FOR YOUR ORDER!' = &lt;built-in method upper of str object at 0x77ed090dbc80&gt;()&#10; +    where &lt;built-in method upper of str object at 0x77ed090dbc80&gt; = 'Thank you for your order!'.upper&#10; +      where 'Thank you for your order!' = get_confirmation_header_text()&#10;[+1 more line; full report in element text]">page = &lt;Page url='http://127.0.0.1:8000/checkout-complete.html'&gt;
+
+    def test_confirmation_screen_content(page: Page):
+        _start_checkout(page)
+        step_one = CheckoutStepOnePage(page)
+        checkout_user = random_checkout_user()
+        step_one.fill_checkout_form(
+            checkout_user.first_name, checkout_user.last_name, checkout_user.postal_code
+        )
+        step_one.continue_to_step_two()
+        step_two = CheckoutStepTwoPage(page)
+        step_two.finish_order()
+        complete = CheckoutCompletePage(page)
+&gt;       assert "ORDER PLACED" in complete.get_confirmation_header_text().upper()
+E       AssertionError: assert 'ORDER PLACED' in 'THANK YOU FOR YOUR ORDER!'
+E        +  where 'THANK YOU FOR YOUR ORDER!' = &lt;built-in method upper of str object at 0x77ed090dbc80&gt;()
+E        +    where &lt;built-in method upper of str object at 0x77ed090dbc80&gt; = 'Thank you for your order!'.upper
+E        +      where 'Thank you for your order!' = get_confirmation_header_text()
+E        +        where get_confirmation_header_text = &lt;tests.pages.checkout_complete_page.CheckoutCompletePage object at 0x77ed08f855e0&gt;.get_confirmation_header_text
+
+tests/test_suites/test_checkout.py:86: AssertionError</failure></testcase></testsuite></testsuites>

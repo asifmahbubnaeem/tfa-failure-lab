@@ -1,0 +1,24 @@
+diff --git a/suite/tests/fixtures/users.json b/suite/tests/fixtures/users.json
+index 676b18d..8f13d11 100644
+--- a/suite/tests/fixtures/users.json
++++ b/suite/tests/fixtures/users.json
+@@ -1,7 +1,7 @@
+ {
+   "standard_user": {
+     "username": "standard_user",
+-    "password": "lab_password",
++    "password": "lab_pasword",
+     "description": "Standard user with normal behaviour"
+   },
+   "locked_out_user": {
+diff --git a/suite/tests/utils/waits.py b/suite/tests/utils/waits.py
+index 2df5dc5..910d4db 100644
+--- a/suite/tests/utils/waits.py
++++ b/suite/tests/utils/waits.py
+@@ -2,5 +2,6 @@ from playwright.sync_api import Page
+ 
+ 
+ def wait_for_network_idle(page: Page, timeout: int = 10000) -> None:
++    """Wait until the page has had no network activity for 500 ms."""
+     page.wait_for_load_state("networkidle", timeout=timeout)
+ 
