@@ -1,0 +1,19 @@
+diff --git a/shop/app.py b/shop/app.py
+index b4f40db..f0a7d19 100644
+--- a/shop/app.py
++++ b/shop/app.py
+@@ -192,11 +192,11 @@ def checkout_one_submit(
+     if not user:
+         return to_login()
+     error = None
+-    if not firstName.strip():
++    if firstName is None:
+         error = "Error: First name is required."
+-    elif not lastName.strip():
++    elif lastName is None:
+         error = "Error: Last name is required."
+-    elif not postalCode.strip():
++    elif postalCode is None:
+         error = "Error: Postal code is required."
+     if error:
+         count = len(db.cart(cart_of(request)))

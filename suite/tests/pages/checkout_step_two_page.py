@@ -31,5 +31,5 @@ class CheckoutStepTwoPage(BasePage):
         return self._extract_amount(text)
 
     def finish_order(self) -> None:
-        self.page.click(self.FINISH_BUTTON)
+        self.click_and_wait(self.FINISH_BUTTON)
 

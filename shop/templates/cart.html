@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block head %}<script src="/static/shop.js"></script>{% endblock %}
 {% block content %}
 <h1>Your cart</h1>
 <div class="cart_list">
@@ -17,4 +18,4 @@
   <button id="checkout" data-test="checkout" onclick="location.href='/checkout-step-one.html'">Checkout</button>
 </div>
 {% endblock %}
-{% block scripts %}<script src="/static/shop.js"></script>{% endblock %}
+

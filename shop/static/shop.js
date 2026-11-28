@@ -1,6 +1,5 @@
 // Cart calls are synchronous on purpose: the page updates before the click returns, so a test
-// that reads the badge right after clicking sees the server's answer. Slowness or errors injected
-// on the server (see shop/faults.py) therefore surface exactly where a real user would feel them.
+// that reads the badge right after clicking sees the server's answer.
 function cartCall(method, slug) {
   const xhr = new XMLHttpRequest();
   xhr.open(method, "/api/cart/" + encodeURIComponent(slug), false);
@@ -52,10 +51,8 @@ function removeFromCartPage(button) {
 
 function sortItems(mode) {
   const list = document.querySelector(".inventory_list");
-  const textPrices = list.dataset.priceSort === "text";
   const items = Array.from(list.querySelectorAll(".inventory_item"));
-  const priceKey = (el) =>
-    textPrices ? el.querySelector(".inventory_item_price").textContent : parseFloat(el.dataset.price);
+  const priceKey = (el) => parseFloat(el.dataset.price);
   const cmp = {
     az: (a, b) => a.dataset.name.localeCompare(b.dataset.name),
     za: (a, b) => b.dataset.name.localeCompare(a.dataset.name),

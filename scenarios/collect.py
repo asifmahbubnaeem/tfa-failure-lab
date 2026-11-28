@@ -7,16 +7,21 @@ Standard library only; needs the GitHub CLI (`gh`), signed in with access to the
     python3 scenarios/collect.py --only pb-tax-rounding           # one case
     python3 scenarios/collect.py --all --runs 2                    # 2 cases per scenario
 
-Each case lands in cases/case-NNNN/ (neutral names, so the folder doesn't give the answer away):
-    junit.xml      the JUnit report (what the agent reads)
-    test_log.txt   log of the "Run e2e suite" step only, with every hint of the injected
-                   fault removed (the agent reads this too)
-    shop.log       the application's own log (the agent reads this too)
-    label.json     category and root cause, plus run details. The agent never reads this.
+Each case lands in cases/case-NNNN/ (neutral names, so the folder doesn't give the answer away).
+The agent may read:
+    junit.xml      the JUnit report of the run
+    rerun.xml      the JUnit report of rerunning only the failed tests once (pytest --lf)
+    test_log.txt   log of the "Run e2e suite" step only
+    shop.log       the application's own log
+    diff.patch     what changed in this run, like the diff of a commit
+    source/        the test code and shop code as they were tested
+The agent never reads:
+    label.json     category and root cause, plus run details
 
-The agent must not be able to see the answer, so the step that switches faults on, the patch
-step, and the environment block GitHub prints at the top of each step are left out, and every
-saved file is checked for fault names before it is written.
+Every case also gets one harmless change from the `noise` list, so every case has a diff.
+The step that switches faults on, the patch step, and the environment block GitHub prints at the
+top of each step are left out, and every saved file is checked for fault names before it is
+written.
 """
 
 import argparse
@@ -41,7 +46,8 @@ ROOT = HERE.parent
 # Anything that names an injected fault. Must never appear in a file the agent reads.
 LEAK = re.compile(
     r"\bBUG_[A-Z_]+|\bFLAKY_[A-Z_]+|\bfault on\b|scenarios/patches|patched suite|suite_patch|unset_tax_rate|"
-    r"break_database|\bcase_id\b|environment failure|product bug|test bug|flaky",
+    r"break_database|\bcase_id\b|environment failure|product bug|test bug|flaky|"
+    r"\bnoise-[a-z]+|\b(?:pb|tb|fl|env)-[a-z]+-[a-z]+",
     re.I,
 )
 TIMESTAMP = re.compile(r"^\d{4}-\d\d-\d\dT[\d:.]+Z ?")
@@ -72,9 +78,21 @@ def next_case_id(out: Path, taken: set[str]) -> str:
     return f"case-{n:04d}"
 
 
-def dispatch(scenario: dict, case_id: str) -> None:
+def load_noise() -> list[str]:
+    with open(HERE / "scenarios.toml", "rb") as f:
+        return tomllib.load(f).get("noise", [])
+
+
+def noise_for(case_id: str, noise: list[str]) -> str:
+    """Rotate through the harmless changes by case number, so each is used about equally."""
+    return noise[(int(case_id.split("-")[-1]) - 1) % len(noise)] if noise else ""
+
+
+def dispatch(scenario: dict, case_id: str, noise_patch: str) -> None:
     args = ["workflow", "run", WORKFLOW, "-R", REPO, "--ref", "main", "-f", f"case_id={case_id}"]
-    for key, value in scenario.get("inputs", {}).items():
+    inputs = dict(scenario.get("inputs", {}))
+    inputs["patches"] = " ".join(p for p in (inputs.get("patches", ""), noise_patch) if p)
+    for key, value in inputs.items():
         if isinstance(value, bool):
             value = "true" if value else "false"
         args += ["-f", f"{key}={value}"]
@@ -140,13 +158,17 @@ def failing_tests(junit_xml: Path) -> list[dict]:
     return failures
 
 
+def rerun_failures(rerun_xml: Path) -> int:
+    return len(failing_tests(rerun_xml))
+
+
 def check_no_leak(name: str, text: str) -> None:
     m = LEAK.search(text)
     if m:
         raise RuntimeError(f"{name} would reveal the injected fault ('{m.group(0)}'); not saving this case")
 
 
-def save_case(scenario: dict, case_id: str, run: dict, out: Path) -> str:
+def save_case(scenario: dict, case_id: str, run: dict, out: Path, noise_patch: str) -> str:
     run_id = run["databaseId"]
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
@@ -161,19 +183,35 @@ def save_case(scenario: dict, case_id: str, run: dict, out: Path) -> str:
         shop_log_path = next(tmp.rglob("shop.log"), None)
         shop_log = shop_log_path.read_text() if shop_log_path else ""
         junit_text = junit.read_text()
-        for name, text in (("junit.xml", junit_text), ("test_log.txt", test_log), ("shop.log", shop_log)):
+        rerun = next(tmp.rglob("rerun.xml"), None)
+        rerun_text = rerun.read_text() if rerun else ""
+        diff = next(tmp.rglob("diff.patch"), None)
+        diff_text = diff.read_text() if diff else ""
+        source = next((p for p in tmp.rglob("source") if p.is_dir()), None)
+        if source is None or not diff_text:
+            return "the run's reports have no source snapshot or diff (is the workflow up to date?)"
+        texts = {"junit.xml": junit_text, "rerun.xml": rerun_text, "test_log.txt": test_log,
+                 "shop.log": shop_log, "diff.patch": diff_text}
+        for f in sorted(source.rglob("*")):
+            if f.is_file():
+                texts[f"source/{f.relative_to(source)}"] = f.read_text(errors="replace")
+        for name, text in texts.items():
             check_no_leak(name, text)
 
         case = out / case_id
         case.mkdir(parents=True)
-        (case / "junit.xml").write_text(junit_text)
-        (case / "test_log.txt").write_text(test_log)
-        (case / "shop.log").write_text(shop_log)
+        for name, text in texts.items():
+            if name == "rerun.xml" and not text:
+                continue
+            (case / name).parent.mkdir(parents=True, exist_ok=True)
+            (case / name).write_text(text)
         label = {
             "case_id": case_id,
             "category": scenario["category"],
             "root_cause": scenario["root_cause"],
             "scenario": scenario["id"],
+            "noise_patch": noise_patch,
+            "rerun_failures": rerun_failures(rerun) if rerun else None,
             "failing_tests": failures,
             "source": "injected",
             "run_url": run["url"],
@@ -210,6 +248,7 @@ def main() -> int:
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
+    noise = load_noise()
     # Work queue: (scenario, cases still wanted, attempts left).
     queue = [[s, args.runs, s.get("attempts", 1) * args.runs] for s in wanted]
     while any(want > 0 and left > 0 for _, want, left in queue):
@@ -219,7 +258,7 @@ def main() -> int:
             for _ in range(min(want, left)):
                 case_id = next_case_id(out, taken)
                 taken.add(case_id)
-                dispatch(s, case_id)
+                dispatch(s, case_id, noise_for(case_id, noise))
                 print(f"started  {case_id} ({s['id']})", flush=True)
                 batch.append((item, case_id))
                 time.sleep(2)
@@ -229,7 +268,7 @@ def main() -> int:
             done = wait_for(run["databaseId"])
             item[2] -= 1
             try:
-                result = save_case(s, case_id, {**run, **done}, out)
+                result = save_case(s, case_id, {**run, **done}, out, noise_for(case_id, noise))
             except RuntimeError as e:
                 result = f"skipped: {e}"
             if result.startswith("saved"):

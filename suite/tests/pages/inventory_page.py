@@ -63,7 +63,7 @@ class InventoryPage(BasePage):
         item.locator("button").click()
 
     def open_cart(self) -> None:
-        self.page.click(self.CART_LINK)
+        self.click_and_wait(self.CART_LINK)
 
     def get_cart_badge_count(self) -> int:
         if not self.page.locator(self.CART_BADGE).is_visible():

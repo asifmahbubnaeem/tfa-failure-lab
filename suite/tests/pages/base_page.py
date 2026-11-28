@@ -31,6 +31,12 @@ class BasePage:
         self.page.screenshot(path=str(file_path), full_page=True)
         return file_path
 
+    def click_and_wait(self, selector: str) -> None:
+        """Click something that loads a new page, and wait for that page. Reading the page right
+        after a plain click can still see the old page."""
+        with self.page.expect_navigation():
+            self.page.click(selector)
+
     def wait_for_visible(self, selector: str, timeout: Optional[int] = None) -> None:
         self.page.wait_for_selector(selector, state="visible", timeout=timeout or self.config.timeout)
 

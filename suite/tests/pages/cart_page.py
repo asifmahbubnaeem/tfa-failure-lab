@@ -22,5 +22,5 @@ class CartPage(BasePage):
         item.locator(self.REMOVE_BUTTON).click()
 
     def proceed_to_checkout(self) -> None:
-        self.page.click(self.CHECKOUT_BUTTON)
+        self.click_and_wait(self.CHECKOUT_BUTTON)
 

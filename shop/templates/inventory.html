@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block head %}<script src="/static/shop.js"></script>{% endblock %}
 {% block content %}
 <div class="toolbar">
   <h1>Products</h1>
@@ -11,7 +12,7 @@
     </select>
   </span>
 </div>
-<div class="inventory_list" data-price-sort="{{ price_sort }}">
+<div class="inventory_list">
   {% for p in products %}
   <div class="inventory_item" data-test="inventory-item" data-name="{{ p.name }}" data-price="{{ p.price }}">
     <div class="inventory_item_img"><img src="/static/img/{{ p.slug }}.svg" alt="{{ p.name }}"></div>
@@ -27,4 +28,4 @@
   {% endfor %}
 </div>
 {% endblock %}
-{% block scripts %}<script src="/static/shop.js"></script>{% endblock %}
+

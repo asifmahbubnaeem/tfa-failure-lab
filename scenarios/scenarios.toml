@@ -2,8 +2,13 @@
 # Actions and saves the failed run as a labelled eval case. The label comes from here; the agent
 # never sees this file.
 #
-# inputs   -> passed to the e2e workflow: faults, unset_tax_rate, break_database, suite_patch
+# inputs   -> passed to the e2e workflow: patches, faults, unset_tax_rate, break_database
 # attempts -> flaky scenarios may pass by chance; how many runs to try per wanted case
+#
+# Every case also gets one harmless change from `noise`, so every case has a diff. Without it,
+# "the diff is empty" would give away flaky and environment cases.
+
+noise = ["noise-css", "noise-footer", "noise-test-helper", "noise-readme"]
 
 
 # --- product_bug: the application is wrong
@@ -12,26 +17,26 @@
 [[scenario]]
 id = "pb-sort-price"
 category = "product_bug"
-root_cause = "Price sort compares prices as text, so $9.99 sorts after $79.00"
-inputs = { faults = "BUG_SORT_PRICE=1" }
+root_cause = "shop.js sorts by the displayed price text instead of the number, so $9.99 sorts after $79.00"
+inputs = { patches = "pb-sort-price" }
 
 [[scenario]]
 id = "pb-tax-rounding"
 category = "product_bug"
-root_cause = "Tax is truncated to the cent but the total is rounded, so item total + tax != total"
-inputs = { faults = "BUG_TAX_ROUNDING=1" }
+root_cause = "totals() rounds tax down but rounds the total separately, so item total + tax != total"
+inputs = { patches = "pb-tax-rounding" }
 
 [[scenario]]
 id = "pb-cart-remove"
 category = "product_bug"
-root_cause = "Removing an item from the cart does nothing on the server"
-inputs = { faults = "BUG_CART_REMOVE=1" }
+root_cause = "remove_from_cart looks the product up by name instead of slug, so the DELETE matches nothing"
+inputs = { patches = "pb-cart-remove" }
 
 [[scenario]]
 id = "pb-checkout-validation"
 category = "product_bug"
-root_cause = "Checkout accepts empty name and postal code instead of showing an error"
-inputs = { faults = "BUG_CHECKOUT_VALIDATION=1" }
+root_cause = "Checkout validation checks for None instead of empty strings, so empty fields are accepted"
+inputs = { patches = "pb-checkout-validation" }
 
 # --- test_bug: the test code or test data is wrong
 
@@ -40,25 +45,25 @@ inputs = { faults = "BUG_CHECKOUT_VALIDATION=1" }
 id = "tb-checkout-locator"
 category = "test_bug"
 root_cause = "CartPage uses locator [data-test='checkout-button'], but the button is [data-test='checkout']"
-inputs = { suite_patch = "tb-checkout-locator" }
+inputs = { patches = "tb-checkout-locator" }
 
 [[scenario]]
 id = "tb-confirmation-text"
 category = "test_bug"
 root_cause = "Test expects 'ORDER PLACED' but the page correctly says 'Thank you for your order!'"
-inputs = { suite_patch = "tb-confirmation-text" }
+inputs = { patches = "tb-confirmation-text" }
 
 [[scenario]]
 id = "tb-sort-direction"
 category = "test_bug"
 root_cause = "Z-to-A sort test asserts ascending order instead of descending"
-inputs = { suite_patch = "tb-sort-direction" }
+inputs = { patches = "tb-sort-direction" }
 
 [[scenario]]
 id = "tb-password-typo"
 category = "test_bug"
 root_cause = "Test data has password 'lab_pasword' (typo) for standard_user, so every login fails"
-inputs = { suite_patch = "tb-password-typo" }
+inputs = { patches = "tb-password-typo" }
 
 # --- flaky: fails some runs, not others, with no change
 

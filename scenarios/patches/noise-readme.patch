@@ -1,0 +1,11 @@
+diff --git a/README.md b/README.md
+index fa042bc..c6ff4a3 100644
+--- a/README.md
++++ b/README.md
+@@ -58,5 +58,5 @@ uvicorn shop.app:app --port 8000 &          # add fault switches in front, e.g.
+ cd suite && pytest --junitxml=reports/junit.xml
+ ```
+ 
+-Lab accounts: `standard_user` and `locked_out_user`, password `lab_password`. These are
++Lab accounts (both use the password `lab_password`): `standard_user` and `locked_out_user`. These are
+ lab-only and protect nothing.

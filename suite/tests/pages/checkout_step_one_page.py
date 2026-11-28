@@ -19,7 +19,7 @@ class CheckoutStepOnePage(BasePage):
         self.page.fill(self.POSTAL_CODE_INPUT, postal_code)
 
     def continue_to_step_two(self) -> None:
-        self.page.click(self.CONTINUE_BUTTON)
+        self.click_and_wait(self.CONTINUE_BUTTON)
 
     def get_error_message(self) -> str:
         self.wait_for_visible(self.ERROR_MESSAGE)

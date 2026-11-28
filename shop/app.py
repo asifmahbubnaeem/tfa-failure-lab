@@ -2,7 +2,6 @@
 
 Routes match the e2e suite's config: / (login), /inventory.html, /cart.html,
 /checkout-step-one.html, /checkout-step-two.html, /checkout-complete.html.
-See faults.py for the switches that break it on purpose.
 
 Run locally:
     DATABASE_URL=postgresql://lab:lab@localhost:5432/labshop TAX_RATE=0.08 \
@@ -13,7 +12,7 @@ import logging
 import os
 import time
 import uuid
-from decimal import ROUND_DOWN, ROUND_HALF_UP, Decimal
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 
 from fastapi import FastAPI, Form, Request
@@ -22,7 +21,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
 
-from shop import db, faults
+from shop import db, runtime
 
 log = logging.getLogger("labshop")
 HERE = Path(__file__).parent
@@ -38,6 +37,7 @@ app = FastAPI(title="Lab Shop", docs_url=None, redoc_url=None)
 app.add_middleware(SessionMiddleware, secret_key=os.environ.get("SHOP_SECRET", "lab-shop-not-a-secret"))
 app.mount("/static", StaticFiles(directory=HERE / "static"), name="static")
 templates = Jinja2Templates(directory=HERE / "templates")
+runtime.install(app)
 
 
 @app.on_event("startup")
@@ -74,12 +74,8 @@ def money(d: Decimal) -> str:
 def totals(items: list[dict]) -> tuple[Decimal, Decimal, Decimal]:
     rate = Decimal(os.environ["TAX_RATE"])
     subtotal = sum((i["price"] for i in items), Decimal("0"))
-    if faults.on("BUG_TAX_ROUNDING"):
-        tax = (subtotal * rate).quantize(CENT, rounding=ROUND_DOWN)
-        total = (subtotal * (1 + rate)).quantize(CENT, rounding=ROUND_HALF_UP)
-    else:
-        tax = (subtotal * rate).quantize(CENT, rounding=ROUND_HALF_UP)
-        total = subtotal + tax
+    tax = (subtotal * rate).quantize(CENT, rounding=ROUND_HALF_UP)
+    total = subtotal + tax
     return subtotal, tax, total
 
 
@@ -129,7 +125,6 @@ def inventory(request: Request):
     user = user_of(request)
     if not user:
         return to_login()
-    faults.maybe_slow_down("inventory")
     in_cart = {i["slug"] for i in db.cart(cart_of(request))}
     return templates.TemplateResponse(
         request,
@@ -139,7 +134,6 @@ def inventory(request: Request):
             "in_cart": in_cart,
             "cart_count": len(in_cart),
             "money": money,
-            "price_sort": "text" if faults.on("BUG_SORT_PRICE") else "number",
         },
     )
 
@@ -157,9 +151,6 @@ def api_add(request: Request, slug: str):
     user = user_of(request)
     if not user:
         return JSONResponse({"error": "not logged in"}, status_code=401)
-    faults.maybe_slow_down("api")
-    if faults.api_should_fail():
-        return JSONResponse({"error": "cart service error"}, status_code=500)
     db.add_to_cart(cart_of(request), slug)
     return cart_json(cart_of(request))
 
@@ -169,11 +160,7 @@ def api_remove(request: Request, slug: str):
     user = user_of(request)
     if not user:
         return JSONResponse({"error": "not logged in"}, status_code=401)
-    faults.maybe_slow_down("api")
-    if faults.api_should_fail():
-        return JSONResponse({"error": "cart service error"}, status_code=500)
-    if not faults.on("BUG_CART_REMOVE"):
-        db.remove_from_cart(cart_of(request), slug)
+    db.remove_from_cart(cart_of(request), slug)
     return cart_json(cart_of(request))
 
 
@@ -182,7 +169,6 @@ def cart_page(request: Request):
     user = user_of(request)
     if not user:
         return to_login()
-    faults.maybe_slow_down("cart")
     items = db.cart(cart_of(request))
     return templates.TemplateResponse(
         request, "cart.html", {"items": items, "cart_count": len(items), "money": money}
@@ -206,13 +192,12 @@ def checkout_one_submit(
     if not user:
         return to_login()
     error = None
-    if not faults.on("BUG_CHECKOUT_VALIDATION"):
-        if not firstName.strip():
-            error = "Error: First name is required."
-        elif not lastName.strip():
-            error = "Error: Last name is required."
-        elif not postalCode.strip():
-            error = "Error: Postal code is required."
+    if not firstName.strip():
+        error = "Error: First name is required."
+    elif not lastName.strip():
+        error = "Error: Last name is required."
+    elif not postalCode.strip():
+        error = "Error: Postal code is required."
     if error:
         count = len(db.cart(cart_of(request)))
         return templates.TemplateResponse(
@@ -229,7 +214,6 @@ def checkout_two(request: Request):
     user = user_of(request)
     if not user:
         return to_login()
-    faults.maybe_slow_down("checkout")
     items = db.cart(cart_of(request))
     subtotal, tax, total = totals(items)
     return templates.TemplateResponse(
@@ -251,7 +235,6 @@ def checkout_finish(request: Request):
     user = user_of(request)
     if not user:
         return to_login()
-    faults.maybe_slow_down("checkout")
     items = db.cart(cart_of(request))
     subtotal, tax, total = totals(items)
     order_id = db.create_order(user, subtotal, tax, total)

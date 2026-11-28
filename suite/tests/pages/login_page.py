@@ -19,7 +19,7 @@ class LoginPage(BasePage):
         self.open()
         self.page.fill(self.USERNAME_INPUT, username)
         self.page.fill(self.PASSWORD_INPUT, password)
-        self.page.click(self.LOGIN_BUTTON)
+        self.click_and_wait(self.LOGIN_BUTTON)
 
     def get_error_message(self) -> str:
         self.wait_for_visible(self.ERROR_MESSAGE)
