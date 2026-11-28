@@ -249,6 +249,19 @@ def main() -> int:
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     noise = load_noise()
+    # A patch's diff ends up in every case that uses it, context lines included: check them first,
+    # so a leaking patch stops the run here instead of quietly losing cases later.
+    needed = set(noise) | {p for s in wanted for p in s.get("inputs", {}).get("patches", "").split()}
+    for name in sorted(needed):
+        f = HERE / "patches" / f"{name}.patch"
+        if not f.exists():
+            print(f"Missing patch: {f}", file=sys.stderr)
+            return 1
+        try:
+            check_no_leak(f"patch {name}", f.read_text())
+        except RuntimeError as e:
+            print(e, file=sys.stderr)
+            return 1
     # Work queue: (scenario, cases still wanted, attempts left).
     queue = [[s, args.runs, s.get("attempts", 1) * args.runs] for s in wanted]
     while any(want > 0 and left > 0 for _, want, left in queue):

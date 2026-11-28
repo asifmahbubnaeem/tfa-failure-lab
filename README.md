@@ -39,7 +39,7 @@ The flaky switches are middleware in `shop/runtime.py`, so the shop's own code s
 They are random by design: a run may pass.
 
 Every case also gets one harmless change (`noise-*` patches: a style tweak, a footer, a test
-helper docstring, a README edit), so every case has a diff and "nothing changed" never gives the
+helper docstring, a comment in `docker-compose.yml`), so every case has a diff and "nothing changed" never gives the
 answer away.
 
 All of this was checked locally: the clean suite passes 6 restarts in a row with 4 parallel

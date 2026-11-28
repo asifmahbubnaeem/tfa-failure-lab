@@ -8,7 +8,7 @@
 # Every case also gets one harmless change from `noise`, so every case has a diff. Without it,
 # "the diff is empty" would give away flaky and environment cases.
 
-noise = ["noise-css", "noise-footer", "noise-test-helper", "noise-readme"]
+noise = ["noise-css", "noise-footer", "noise-test-helper", "noise-compose"]
 
 
 # --- product_bug: the application is wrong
